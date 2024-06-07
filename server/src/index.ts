@@ -1,15 +1,75 @@
-import express, { Request, Response, NextFunction } from 'express';
+import dotenv from 'dotenv';
+dotenv.config();
 
-const app = express(); // express 객체 받아옴
+import createError from 'http-errors';
+import express from 'express';
+import path from 'path';
+import cookieParser from 'cookie-parser';
+import csrf from 'csurf';
+import passport from 'passport';
+import logger from 'morgan';
+import MySQLStoreFactory from 'express-mysql-session';
 
-app.get('/', (req: Request, res: Response, next: NextFunction) => {
-  res.send('헬로우 차징!');
-}); // HTTP GET method 정의
+const MySQLStore = MySQLStoreFactory(require('express-session'));
+const session = require('express-session');
 
-app.listen('8000', () => {
+
+import indexRouter from './routes/index';
+import  authRouter from './routes/auth';
+
+const app = express();
+
+
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, '../public')));
+
+const sessionStore = new MySQLStore({
+  host: process.env.DB_HOST || 'charging-db.ctq2gqy0svm5.us-east-1.rds.amazonaws.com',
+  port: Number(process.env.DB_PORT) || 3306,
+  user: process.env.DB_USER || 'admin',
+  password: process.env.DB_PASSWORD || 'charging',
+  database: process.env.DB_NAME || 'charging_db'
+});
+
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false, // don't save session if unmodified
+  saveUninitialized: false, // don't create session until something stored
+  store: sessionStore
+}));
+
+app.use(csrf());
+
+app.use(passport.authenticate('session'));
+
+app.use((req, res, next) => {
+  res.locals.csrfToken = req.csrfToken();
+  next();
+});
+
+app.use('/', indexRouter);
+app.use('/', authRouter);
+
+// catch 404 and forward to error handler
+app.use((req, res, next) => {
+  next(createError(404));
+});
+
+// error handler
+app.use((err: createError.HttpError, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  res.status(err.status || 500);
+});
+
+app.listen(3000, () => {
   console.log(`
     #############################################
-        🛡️ Server listening on port: 8000 🛡️
+        🛡️ Server listening on port: 3000 🛡️
     #############################################    
     `);
-}); // 8000번 포트에서 서버 실행
+});
