@@ -54,6 +54,11 @@ const googleClientID = process.env.GOOGLE_ID ?? '';
 const googleClientSecret = process.env.GOOGLE_SECRET ?? '';
 const googleCallbackURL = process.env.GOOGLE_CALL_BACK_URL ?? '';
 
+const kakaoClientID = process.env.KAKAO_ID ?? '';
+const kakaoClientSecret = process.env.KAKAO_SECRET ?? '';
+const kakaoCallbackURL = process.env.KAKAO_CALL_BACK_URL ?? '';
+
+
 export {
   applicationName,
   port,
@@ -63,6 +68,9 @@ export {
   googleClientID,
   googleClientSecret,
   googleCallbackURL,
+  kakaoClientID,
+  kakaoClientSecret,
+  kakaoCallbackURL,
   db_connection,
   sessionStore,
 };

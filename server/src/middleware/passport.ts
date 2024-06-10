@@ -1,10 +1,14 @@
 import passport from 'passport';
 import { Strategy as GoogleStrategy, Profile } from 'passport-google-oauth20';
+import { Strategy as KakaoStrategy, Profile as KakaoProfile } from 'passport-kakao';
 import {
     googleClientID,
     googleClientSecret,
     googleCallbackURL,
     db_connection,
+    kakaoClientID,
+    kakaoClientSecret,
+    kakaoCallbackURL,
   } from '../../config';
   
 import crypto from 'crypto';
@@ -15,7 +19,7 @@ interface User {
     email: string;
     displayName: string;
   }
-
+//Google passport
 passport.use(new GoogleStrategy({
   clientID: googleClientID,
   clientSecret: googleClientSecret,
@@ -54,6 +58,44 @@ passport.use(new GoogleStrategy({
     return cb(err);
   }
 }));
+
+//Kakao passport
+passport.use(new KakaoStrategy({
+  clientID: kakaoClientID,
+  clientSecret: kakaoClientSecret,
+  callbackURL: kakaoCallbackURL,
+}, async function (accessToken: string, refreshToken: string, profile: KakaoProfile, done: (err: any, user?: any) => void) {
+  try {
+    const [rows] = await db_connection.query('SELECT * FROM users WHERE platform_type = ? AND email = ?', [
+      'kakao',
+      profile._json.kakao_account.email,
+    ]);
+
+    const userRows = rows as User[];
+
+    if (userRows.length > 0) {
+      return done(null, rows);
+    } else {
+      const uuid = crypto.randomUUID();
+      await db_connection.query('INSERT INTO users (user_id, platform_type, email, displayName) VALUES (?, ?, ?, ?)', [
+        uuid,
+        'kakao',
+        profile._json.kakao_account.email,
+        profile.displayName,
+      ]);
+
+      const user = {
+        email: profile._json.kakao_account.email,
+        name: profile.displayName
+      };
+      return done(null, user);
+    }
+  } catch (err) {
+    return done(err);
+  }
+}));
+
+
 
 passport.serializeUser(function(user: any, cb: (err: any, id?: any) => void) {
   process.nextTick(function() {
