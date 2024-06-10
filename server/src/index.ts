@@ -21,7 +21,6 @@ app.use(express.urlencoded({ extended: false })); // URL-encoded 형식으로 �
 app.use(cookieParser()); // 요청에 포함된 쿠키를 파싱하여 req.cookies 객체에 저장
 app.use(express.static(path.join(__dirname, '../public'))); // 정적 파일을 제공할 디렉토리 경로를 지정, 해당 경로에서 정적 파일을 찾고 요청에 따라 클라이언트 전달
 
-
 // session 처리
 const secretKey = crypto.randomBytes(32).toString('hex'); // secrete 값은 보안을 강화하기 위해서 랜덤하고 예측하기 어려운 값이어야 함
 app.use(
@@ -29,7 +28,7 @@ app.use(
     secret: secretKey,
     resave: false,
     saveUninitialized: false,
-    store: sessionStore,
+    store: sessionStore, // 추후에 cookie or jwt 방식으로 변경???
   }),
 );
 
@@ -49,6 +48,7 @@ app.use((req, res, next) => {
 // 라우터 연결
 app.use('/', stateRouter);
 app.use('/', authRouter);
+
 
 // 오류 처리 미들웨어
 app.use((req, res, next) => {
@@ -89,4 +89,3 @@ app.listen(port, () => {
     #############################################    
     `);
 });
-
