@@ -1,16 +1,8 @@
-import express, { Request, Response, NextFunction } from 'express';
+/*
+ - routes 폴더의 여러 라우터 파일들을 모아서 한꺼번에 내보내기 위한 파일
+*/
 
-const router = express.Router();
+import authRouter from './authRouter';
+import stateRouter from './stateRouter';
 
-/* GET home page. */
-router.get('/', (req: Request, res: Response, next: NextFunction) => {
-  if (!req.user) {
-    return res.send('home');
-  }
-  next();
-}, (req: Request, res: Response, next: NextFunction) => {
-  res.locals.filter = null;
-  res.send('home');
-});
-
-export default router;
+export { authRouter, stateRouter };

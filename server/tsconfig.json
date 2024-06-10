@@ -10,7 +10,7 @@
     "skipLibCheck": true /* Skip type checking all .d.ts files. */,
     "forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,
     "outDir": "./dist",
-    "rootDir": "./src",
+    // "rootDir": "./src",
     "baseUrl": ".",
     "noImplicitAny": true, // any라는 타입이 의도치않게 발생할 경우 에러를 띄워주는 설정
     "strictNullChecks": true // null, undefined 타입에 이상한 조작하면 에러를 띄우는 설정

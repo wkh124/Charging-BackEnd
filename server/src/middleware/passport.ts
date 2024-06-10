@@ -1,7 +1,12 @@
-import express, { Request, Response, NextFunction } from 'express';
 import passport from 'passport';
 import { Strategy as GoogleStrategy, Profile } from 'passport-google-oauth20';
-import db from '../db';
+import {
+    googleClientID,
+    googleClientSecret,
+    googleCallbackURL,
+    db_connection,
+  } from '../../config';
+  
 import crypto from 'crypto';
 
 interface User {
@@ -12,15 +17,15 @@ interface User {
   }
 
 passport.use(new GoogleStrategy({
-  clientID: "1007308287440-91bjr0t32ia3jelgv17mk4miuttv9a65.apps.googleusercontent.com",
-  clientSecret: "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",
-  callbackURL: '/oauth2/redirect/google',
+  clientID: googleClientID,
+  clientSecret: googleClientSecret,
+  callbackURL: googleCallbackURL,
   state: true,
   scope: ['profile', 'email'],
 }, async function verify(accessToken: string, refreshToken: string, profile: Profile, cb: (err: any, user?: any) => void) {
   try {
     console.log(profile.emails?.[0].value);
-    const [rows] = await db.query('SELECT * FROM users WHERE platform_type = ? AND email = ?', [
+    const [rows] = await db_connection.query('SELECT * FROM users WHERE platform_type = ? AND email = ?', [
       'google',
       profile.emails?.[0].value,
     ]);
@@ -32,7 +37,7 @@ passport.use(new GoogleStrategy({
       return cb(null, rows);
     } else {
       const uuid = crypto.randomUUID();
-      await db.query('INSERT INTO users ( user_id, platform_type, email, displayName) VALUES (?, ?, ?, ?)', [
+      await db_connection.query('INSERT INTO users ( user_id, platform_type, email, displayName) VALUES (?, ?, ?, ?)', [
         uuid,
         'google',
         profile.emails?.[0].value,
@@ -62,20 +67,5 @@ passport.deserializeUser(function(user: any, cb: (err: any, user?: any) => void)
   });
 });
 
-const router = express.Router();
-
-router.get('/login/federated/google', passport.authenticate('google'));
-
-router.get('/oauth2/redirect/google', passport.authenticate('google', {
-  successReturnToOrRedirect: '/',
-  failureRedirect: '/'
-}));
-
-router.post('/logout', function(req: Request, res: Response, next: NextFunction) {
-  req.logout(function(err: any) {
-    if (err) { return next(err); }
-    res.redirect('/');
-  });
-});
-
-export default router;
+  
+export default passport;
