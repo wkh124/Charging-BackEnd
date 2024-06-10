@@ -1,0 +1,31 @@
+import { db_connection } from '../../config';
+
+interface User {
+    user_id: string;
+    platform_type: string;
+    email: string;
+    displayName: string;
+    nickName:string;
+}
+
+class UserDao {
+    static async findUserByEmailAndPlatform(email: string, platform: string): Promise<User[]> {
+        const [rows] = await db_connection.query('SELECT * FROM users WHERE platform_type = ? AND email = ?', [
+            platform,
+            email,
+        ]);
+        return rows as User[];
+    }
+
+    static async createUser(uuid: string, email: string, platform: string, displayName: string, nickName:string): Promise<void> {
+        await db_connection.query('INSERT INTO users (user_id, platform_type, email, displayName, nickName) VALUES (?, ?, ?, ?, ?)', [
+            uuid,
+            platform,
+            email,
+            displayName,
+            nickName
+        ]);
+    }
+}
+
+export default UserDao;
