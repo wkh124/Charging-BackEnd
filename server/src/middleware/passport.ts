@@ -75,9 +75,9 @@ passport.use(
 passport.use(
   new KakaoStrategy(
     {
-  clientID: kakaoClientID,
-  clientSecret: kakaoClientSecret,
-  callbackURL: kakaoCallbackURL,
+      clientID: kakaoClientID,
+      clientSecret: kakaoClientSecret,
+      callbackURL: kakaoCallbackURL,
     }, 
     async function verify(
       accessToken: string,

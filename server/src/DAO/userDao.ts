@@ -5,7 +5,11 @@ interface User {
     platform_type: string;
     email: string;
     displayName: string;
-    nickName:string;
+    nickName: string;
+    verified_email: number;
+    created_at: Date;
+    updated_at: Date | null;
+    deleted_at: Date | null;
 }
 
 class UserDao {
@@ -17,14 +21,12 @@ class UserDao {
         return rows as User[];
     }
 
-    static async createUser(uuid: string, email: string, platform: string, displayName: string, nickName:string): Promise<void> {
-        await db_connection.query('INSERT INTO users (user_id, platform_type, email, displayName, nickName) VALUES (?, ?, ?, ?, ?)', [
-            uuid,
-            platform,
-            email,
-            displayName,
-            nickName
-        ]);
+    static async createUser(uuid: string, email: string, platform: string, displayName: string, nickName: string): Promise<void> {
+        await db_connection.query(
+            `INSERT INTO users (user_id, platform_type, email, displayName, nickName, verified_email, created_at, updated_at, deleted_at)
+            VALUES (?, ?, ?, ?, ?, 0, CURRENT_TIMESTAMP, NULL, NULL)`,
+            [uuid, platform, email, displayName, nickName]
+        );
     }
 }
 
