@@ -10,7 +10,7 @@ import csrf from 'csurf';
 
 import { port } from '../config';
 import { sessionStore } from '../config';
-import { authRouter, stateRouter } from './routes';
+import { authRouter, stateRouter, profileRouter } from './routes';
 
 const app = express();
 
@@ -48,7 +48,7 @@ app.use((req, res, next) => {
 // 라우터 연결
 app.use('/', stateRouter);
 app.use('/', authRouter);
-
+app.use('/', profileRouter);
 
 // 오류 처리 미들웨어
 app.use((req, res, next) => {

@@ -30,7 +30,6 @@ router.get(
 //네이버 로그인 라우트
 router.get('/login/federated/naver', passport.authenticate('naver'));
 
-//로그인 성공하고 어디로 갈지 설정하는 라우터(여기서는 임시로 로그인 성공해도 home, 실패해도 home으로 명시함)
 router.get(
   '/oauth2/redirect/naver',
   passport.authenticate('naver', {

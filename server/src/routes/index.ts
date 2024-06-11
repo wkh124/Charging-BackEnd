@@ -4,5 +4,8 @@
 
 import authRouter from './authRouter';
 import stateRouter from './stateRouter';
+import profileRouter from './profileRouter';
 
-export { authRouter, stateRouter };
+
+
+export { authRouter, stateRouter, profileRouter  };
