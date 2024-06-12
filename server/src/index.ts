@@ -10,7 +10,7 @@ import csrf from 'csurf';
 
 import { port } from '../config';
 import { sessionStore } from '../config';
-import { authRouter, stateRouter, profileRouter } from './routes';
+import { authRouter, stateRouter, profileRouter, carRouter } from './routes';
 
 const app = express();
 
@@ -49,6 +49,7 @@ app.use((req, res, next) => {
 app.use('/', stateRouter);
 app.use('/', authRouter);
 app.use('/', profileRouter);
+app.use('/', carRouter);
 
 // 오류 처리 미들웨어
 app.use((req, res, next) => {
@@ -69,7 +70,7 @@ app.use(
     const statusCode: number = err.statusCode ?? 500;
     let message: string = err.message;
     if (statusCode === 500) {
-      message = 'Internal Server Error';
+      message = '내부 서버 오류';
     }
     return res.status(statusCode).json({
       data: null,

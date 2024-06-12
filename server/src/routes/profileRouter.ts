@@ -1,6 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express';
-import UserDao from '../DAO/userDao';
-import UserCarDao from '../DAO/userCarDao';
+import { userDao, userCarDao } from '../DAO';
 import { ensureAuthenticated } from '../middleware/authUser';
 
 const profileRouter = express.Router();
@@ -36,7 +35,7 @@ profileRouter.get('/profile', ensureAuthenticated, async (req: Request, res: Res
 
   try {
     // 사용자의 차량 정보
-    const userCars = await UserCarDao.getUserCar(user.user_id);
+    const userCars = await userCarDao.getUserCar(user.user_id);
 
     // 사용자와 차량 정보를 응답으로 반환
     res.json({
@@ -67,11 +66,11 @@ profileRouter.put('/profile', ensureAuthenticated, async (req: Request, res: Res
 
   try {
     // 사용자 정보를 업데이트
-    await UserDao.updateUser(user.user_id, displayName, nickName);
+    await userDao.updateUser(user.user_id, displayName, nickName);
 
     // carId가 제공된 경우 차량 정보를 업데이트
     if (carId) {
-      await UserCarDao.updateUserCar(user.user_id, carId);
+      await userCarDao.updateUserCar(user.user_id, carId);
     }
 
     // 업데이트 성공 메시지 응답으로 반환

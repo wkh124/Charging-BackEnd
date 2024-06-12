@@ -21,7 +21,7 @@ import {
   naverCallbackURL,
 } from '../../config';
 import { userDao } from '../DAO';
-import { nanoid } from "nanoid"; 
+import { nanoid } from 'nanoid';
 import crypto from 'crypto';
 import AppError from '../../utils/appError';
 import commonErrors from '../../utils/commonErrors';
@@ -30,45 +30,57 @@ import commonErrors from '../../utils/commonErrors';
 passport.use(
   new GoogleStrategy(
     {
-  clientID: googleClientID,
-  clientSecret: googleClientSecret,
-  callbackURL: googleCallbackURL,
-  state: true,
-  scope: ['profile', 'email'],
-    }, 
+      clientID: googleClientID,
+      clientSecret: googleClientSecret,
+      callbackURL: googleCallbackURL,
+      state: true,
+      scope: ['profile', 'email'],
+    },
     async function verify(
-      accessToken: string, 
-      refreshToken: string, 
-      profile: Profile, 
-      cb: (err: any, user?: any) => void
+      accessToken: string,
+      refreshToken: string,
+      profile: Profile,
+      cb: (err: any, user?: any) => void,
     ) {
       try {
         const email = profile.emails?.[0].value;
 
         if (!email) {
-          return cb(new AppError(commonErrors.resourceNotFoundError,'이메일이 존재하지 않습니다.', 400));
+          return cb(
+            new AppError(
+              commonErrors.resourceNotFoundError,
+              '이메일이 존재하지 않습니다.',
+              400,
+            ),
+          );
         }
 
-        const userRows = await userDao.findUserByEmailAndPlatform(email, 'google');
+        const userRows = await userDao.findUser(email, 'google');
 
         if (userRows.length > 0) {
           return cb(null, userRows[0]);
         } else {
           let uuid = crypto.randomUUID();
-          let nickName= "익명"+ nanoid();
-          await userDao.createUser(uuid, email, 'google', profile.displayName, nickName);
+          let nickName = '익명' + nanoid();
+          await userDao.createUser(
+            uuid,
+            email,
+            'google',
+            profile.displayName,
+            nickName,
+          );
 
           const user = {
-                        email,
-                        displayName: profile.displayName,
+            email,
+            displayName: profile.displayName,
           };
           return cb(null, user);
         }
       } catch (err) {
         return cb(err);
       }
-    }
-  )
+    },
+  ),
 );
 
 //카카오 passport
@@ -78,31 +90,43 @@ passport.use(
       clientID: kakaoClientID,
       clientSecret: kakaoClientSecret,
       callbackURL: kakaoCallbackURL,
-    }, 
+    },
     async function verify(
       accessToken: string,
-      refreshToken: string, 
-      profile: KakaoProfile, 
-      cb: (err: any, user?: any) => void
+      refreshToken: string,
+      profile: KakaoProfile,
+      cb: (err: any, user?: any) => void,
     ) {
       try {
-          const email = profile._json.kakao_account.email;
+        const email = profile._json.kakao_account.email;
 
-          if (!email) {
-            return cb(new AppError(commonErrors.resourceNotFoundError,'이메일이 존재하지 않습니다.', 400));
-          }
+        if (!email) {
+          return cb(
+            new AppError(
+              commonErrors.resourceNotFoundError,
+              '이메일이 존재하지 않습니다.',
+              400,
+            ),
+          );
+        }
 
-          const userRows = await userDao.findUserByEmailAndPlatform(email, 'kakao');
+        const userRows = await userDao.findUser(email, 'kakao');
 
-          if (userRows.length > 0) {
-            return cb(null, userRows[0]);
-          } else {
-            let uuid = crypto.randomUUID();
-            let nickName= "익명"+ nanoid()
-            await userDao.createUser(uuid, profile._json.kakao_account.email, 'kakao', profile.displayName, nickName);
+        if (userRows.length > 0) {
+          return cb(null, userRows[0]);
+        } else {
+          let uuid = crypto.randomUUID();
+          let nickName = '익명' + nanoid();
+          await userDao.createUser(
+            uuid,
+            profile._json.kakao_account.email,
+            'kakao',
+            profile.displayName,
+            nickName,
+          );
 
-            const user = {
-            email:profile._json.kakao_account.email ,
+          const user = {
+            email: profile._json.kakao_account.email,
             displayName: profile.displayName,
           };
           return cb(null, user);
@@ -110,8 +134,8 @@ passport.use(
       } catch (err) {
         return cb(err);
       }
-    }
-  )
+    },
+  ),
 );
 
 //네이버 passport
@@ -123,27 +147,39 @@ passport.use(
       callbackURL: naverCallbackURL,
       state: true,
       scope: ['profile', 'email'],
-    }, 
+    },
     async function verify(
-      accessToken: string, 
-      refreshToken: string, 
-      profile: NaverProfile, 
-      cb: (err: any, user?: any) => void
+      accessToken: string,
+      refreshToken: string,
+      profile: NaverProfile,
+      cb: (err: any, user?: any) => void,
     ) {
       try {
         const email = profile.email;
         if (!email) {
-          return cb(new AppError(commonErrors.resourceNotFoundError,'이메일이 존재하지 않습니다.', 400));
-          }
+          return cb(
+            new AppError(
+              commonErrors.resourceNotFoundError,
+              '이메일이 존재하지 않습니다.',
+              400,
+            ),
+          );
+        }
 
-          const userRows = await userDao.findUserByEmailAndPlatform(email, 'naver');
+        const userRows = await userDao.findUser(email, 'naver');
 
         if (userRows.length > 0) {
           return cb(null, userRows[0]);
         } else {
           let uuid = crypto.randomUUID();
-          let nickName= "익명"+ nanoid();
-          await userDao.createUser(uuid, email, 'naver', profile.name as string, nickName);
+          let nickName = '익명' + nanoid();
+          await userDao.createUser(
+            uuid,
+            email,
+            'naver',
+            profile.name as string,
+            nickName,
+          );
 
           const user = {
             email,
@@ -154,13 +190,13 @@ passport.use(
       } catch (err) {
         return cb(err);
       }
-    }
-  )
+    },
+  ),
 );
 
 passport.serializeUser(function (user: any, cb: (err: any, id?: any) => void) {
   process.nextTick(function () {
-    cb(null, { email: user.email, name: user.name });
+    cb(null, { user_id: user.user_id });
   });
 });
 

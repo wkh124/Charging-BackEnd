@@ -14,7 +14,7 @@ interface User {
 
 class UserDao {
     //유저 찾기
-    static async findUserByEmailAndPlatform(email: string, platform: string): Promise<User[]> {
+    static async findUser(email: string, platform: string): Promise<User[]> {
         const [rows] = await db_connection.query('SELECT * FROM users WHERE platform_type = ? AND email = ?', [
             platform,
             email,
