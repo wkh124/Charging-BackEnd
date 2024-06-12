@@ -6,7 +6,9 @@ import authRouter from './authRouter';
 import stateRouter from './stateRouter';
 import profileRouter from './profileRouter';
 import carReviewRouter from './carReviewRouter';
+import carRouter from './carRouter';
+import mapCommentRouter from './mapCommentRouter';
 
 
 
-export { authRouter, stateRouter, profileRouter, carReviewRouter };
+export { authRouter, stateRouter, profileRouter, carReviewRouter , carRouter , mapCommentRouter};

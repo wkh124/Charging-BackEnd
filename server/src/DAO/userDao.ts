@@ -12,7 +12,7 @@ interface User {
     deleted_at: Date | null;
 }
 
-class UserDao {
+class userDao {
     //유저 찾기
     static async findUser(email: string, platform: string): Promise<User[]> {
         const [rows] = await db_connection.query('SELECT * FROM users WHERE platform_type = ? AND email = ?', [
@@ -37,6 +37,14 @@ class UserDao {
             [displayName, nickName, userId]
         );
     }
+    // 유저 soft_delete -> 요거 soft delete한 다음에 어떻게???? 
+    static async deleteUser(userId: string): Promise<void> {
+        await db_connection.query(
+            `UPDATE users SET deleted_at = CURRENT_TIMESTAMP WHERE user_id = ?`,
+            [userId]
+        );
+    }
+
 }
 
-export default UserDao;
+export default userDao;

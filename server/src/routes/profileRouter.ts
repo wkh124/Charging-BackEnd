@@ -36,7 +36,6 @@ profileRouter.get('/profile', ensureAuthenticated, async (req: Request, res: Res
   try {
     // 사용자의 차량 정보
     const userCars = await userCarDao.getUserCar(user.user_id);
-
     // 사용자와 차량 정보를 응답으로 반환
     res.json({
       user,
@@ -45,12 +44,12 @@ profileRouter.get('/profile', ensureAuthenticated, async (req: Request, res: Res
     });
   } catch (err) {
     console.error(err);
-    // 내부 서버 오류가 발생한 경우 500 오류 반환
+    
     res.status(500).json({ error: '내부 서버 오류' });
   }
 });
 
-// 프로필 업데이트 라우트
+// 프로필 업데이트
 profileRouter.put('/profile', ensureAuthenticated, async (req: Request, res: Response) => {
   // req 객체를 AuthenticatedRequest 타입으로 단언
   const authReq = req as AuthenticatedRequest;
@@ -73,13 +72,31 @@ profileRouter.put('/profile', ensureAuthenticated, async (req: Request, res: Res
       await userCarDao.updateUserCar(user.user_id, carId);
     }
 
-    // 업데이트 성공 메시지 응답으로 반환
     res.json({ message: '프로필이 성공적으로 업데이트되었습니다' });
   } catch (err) {
     console.error(err);
-    // 내부 서버 오류가 발생한 경우 500 오류 반환
+
     res.status(500).json({ error: '내부 서버 오류' });
   }
 });
+
+// 유저 soft_delete
+profileRouter.delete('/profile', ensureAuthenticated, async (req: Request, res: Response) => {
+  const authReq = req as AuthenticatedRequest;
+  const user = authReq.user;
+
+  if (!user) {
+    return res.status(401).json({ error: '인증되지 않음' });
+  }
+
+  try {
+    await userDao.deleteUser(user.user_id);
+    res.json({ message: '계정이 성공적으로 삭제되었습니다' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: '내부 서버 오류' });
+  }
+});
+
 
 export default profileRouter;
