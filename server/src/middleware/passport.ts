@@ -160,7 +160,7 @@ passport.use(
 
 passport.serializeUser(function (user: any, cb: (err: any, id?: any) => void) {
   process.nextTick(function () {
-    cb(null, { email: user.email, name: user.name });
+    cb(null, { user_id: user.user_id });
   });
 });
 

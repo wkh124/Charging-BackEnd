@@ -10,7 +10,7 @@ import csrf from 'csurf';
 
 import { port } from '../config';
 import { sessionStore } from '../config';
-import { authRouter, stateRouter, profileRouter } from './routes';
+import { authRouter, stateRouter, profileRouter, carReviewRouter } from './routes';
 
 const app = express();
 
@@ -20,6 +20,7 @@ app.use(express.json()); // json 파싱
 app.use(express.urlencoded({ extended: false })); // URL-encoded 형식으로 전송된 요청 본문을 해석하고 req.body 객체에 파싱된 데이터를 저장, extended: false => 중첩 객체가 아닌 단일 객체로 파싱
 app.use(cookieParser()); // 요청에 포함된 쿠키를 파싱하여 req.cookies 객체에 저장
 app.use(express.static(path.join(__dirname, '../public'))); // 정적 파일을 제공할 디렉토리 경로를 지정, 해당 경로에서 정적 파일을 찾고 요청에 따라 클라이언트 전달
+
 
 // session 처리
 const secretKey = crypto.randomBytes(32).toString('hex'); // secrete 값은 보안을 강화하기 위해서 랜덤하고 예측하기 어려운 값이어야 함
@@ -49,6 +50,7 @@ app.use((req, res, next) => {
 app.use('/', stateRouter);
 app.use('/', authRouter);
 app.use('/', profileRouter);
+app.use('/', carReviewRouter);
 
 // 오류 처리 미들웨어
 app.use((req, res, next) => {
