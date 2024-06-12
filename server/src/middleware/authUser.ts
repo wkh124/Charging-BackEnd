@@ -4,5 +4,5 @@ export const ensureAuthenticated = (req: Request, res: Response, next: NextFunct
   if (req.isAuthenticated()) {
     return next();
   }
-  res.redirect('/login'); // 로그인 페이지로 리다이렉트
+  res.redirect('/login/federated/google'); // 로그인 페이지로 리다이렉트
 };
