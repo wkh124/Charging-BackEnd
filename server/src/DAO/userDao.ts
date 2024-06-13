@@ -21,6 +21,7 @@ class userDao {
         ]);
         return rows as User[];
     }
+
     // 유저 생성
     static async createUser(uuid: string, email: string, platform: string, displayName: string, nickName: string): Promise<void> {
         await db_connection.query(
@@ -37,6 +38,7 @@ class userDao {
             [displayName, nickName, userId]
         );
     }
+
     // 유저 soft_delete -> 요거 soft delete한 다음에 어떻게???? 
     static async deleteUser(userId: string): Promise<void> {
         await db_connection.query(
