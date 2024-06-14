@@ -23,13 +23,37 @@ app.use(express.urlencoded({ extended: false })); // URL-encoded 형식으로 �
 app.use(cookieParser()); // 요청에 포함된 쿠키를 파싱하여 req.cookies 객체에 저장
 app.use(express.static(path.join(__dirname, '../public'))); // 정적 파일을 제공할 디렉토리 경로를 지정, 해당 경로에서 정적 파일을 찾고 요청에 따라 클라이언트 전달
 
+const connectToSupabase = async () => {
+  try {
+    await db_connection.connect();
+    console.log('Connected to Supabase PostgreSQL database');
+
+    // await db_connection.end(); // 연결 종료
+    // console.log('Disconnected from Supabase PostgreSQL database');
+
+  } catch (err) {
+    console.error('Error connecting to Supabase PostgreSQL database', err);
+  }
+}
+
+connectToSupabase();
+
+
 // postgreSQL에 session 저장 설정
 const secretKey = crypto.randomBytes(32).toString('hex'); // secrete 값은 보안을 강화하기 위해서 랜덤하고 예측하기 어려운 값이어야 함
 app.use(
   session({
     store: new pgSession({
-      db_connection, // 연결된 PostgreSQL 풀
-      tableName: 'session', // 세션 데이터를 저장할 테이블 이름 (기본값: 'session')
+      db_connection,
+      tableName: 'sessions',
+      schemaName: 'public',
+      createTableIfMissing: true, // 테이블이 없으면 자동 생성
+      customColumns: {
+        sid: 'sid',
+        user_id: 'user_id',
+        session: 'sess',
+        expires: 'expire',
+      },
     }),
     secret: secretKey,
     resave: false,
@@ -72,6 +96,7 @@ app.use('/', profileRouter);
 app.use('/', carReviewRouter);
 app.use('/' , carRouter);
 app.use('/', mapCommentRouter);
+
 
 // 오류 처리 미들웨어
 app.use((req, res, next) => {

@@ -12,7 +12,6 @@ import {
   googleClientID,
   googleClientSecret,
   googleCallbackURL,
-  db_connection,
   kakaoClientID,
   kakaoClientSecret,
   kakaoCallbackURL,

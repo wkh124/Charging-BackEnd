@@ -19,18 +19,34 @@ if (envFound.error) {
 }
 
 // DB 연결을 위한 URI or string값 체크
-if (!process.env.DB_CONNECTION_STRING) {
+if (!process.env.DB_CONFIG_HOST) {
   throw new AppError(
     commonErrors.configError,
     '어플리케이션을 시작하려면 DB 환경변수가 필요합니다.',
   );
 }
 
-
-// DB 접속 설정 객체 생성을 위한 Pool (postgreSQL)
+// DB 접속 설정 객체 생성을 위한 Pool, Connection parameters로 연결 (postgreSQL)
 const db_connection: Pool = new Pool({
-  connectionString: process.env.DB_CONNECTION_STRING,
-})
+  host: process.env.DB_CONFIG_HOST,
+  user: process.env.DB_CONFIG_USER,
+  password: process.env.DB_CONFIG_PASSWORD,
+  database: process.env.DB_CONFIG_DATABASE,
+  port: parseInt(process.env.DB_CONFIG_PORT ?? '5432', 10),
+  ssl: {
+    rejectUnauthorized: false,
+  },
+});
+
+
+
+// DB 접속 설정 객체 생성을 위한 Pool, Connection string으로 연결 (postgreSQL)
+// const db_connection: Pool = new Pool({
+//   connectionString: process.env.DB_CONNECTION_STRING,
+//   ssl: {
+//     rejectUnauthorized: false,
+//   },
+// });
 
 
 // // DB 접속 정보 설정 및 접속 (mysql)
@@ -65,7 +81,6 @@ const googleCallbackURL = process.env.GOOGLE_CALL_BACK_URL ?? '';
 const kakaoClientID = process.env.KAKAO_ID ?? '';
 const kakaoClientSecret = process.env.KAKAO_SECRET ?? '';
 const kakaoCallbackURL = process.env.KAKAO_CALL_BACK_URL ?? '';
-
 
 export {
   applicationName,
