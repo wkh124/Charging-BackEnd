@@ -1,7 +1,8 @@
 import dotenv from 'dotenv';
-import mysql, { Pool } from 'mysql2/promise';
-import MySQLStoreFactory from 'express-mysql-session';
-const MySQLStore = MySQLStoreFactory(require('express-session'));
+// import mysql, { Pool } from 'mysql2/promise';
+// import MySQLStoreFactory from 'express-mysql-session';
+// const MySQLStore = MySQLStoreFactory(require('express-session'));
+import { Pool } from 'pg';
 import commonErrors from '../utils/commonErrors';
 import AppError from '../utils/appError';
 
@@ -17,31 +18,38 @@ if (envFound.error) {
   throw new AppError(commonErrors.configError, "Couldn't find .env file");
 }
 
-// DB 연결을 위한 URI값 체크
-if (!process.env.DB_CONFIG_HOST) {
+// DB 연결을 위한 URI or string값 체크
+if (!process.env.DB_CONNECTION_STRING) {
   throw new AppError(
     commonErrors.configError,
     '어플리케이션을 시작하려면 DB 환경변수가 필요합니다.',
   );
 }
 
-// DB 접속 정보 설정 및 접속
-const db_connection: Pool = mysql.createPool({
-  host: process.env.DB_CONFIG_HOST,
-  user: process.env.DB_CONFIG_USER,
-  password: process.env.DB_CONFIG_PASSWORD,
-  database: process.env.DB_CONFIG_DATABASE,
-  port: parseInt(process.env.DB_CONFIG_PORT ?? '3306', 10),
-});
 
-// DB에 세션을 저장하기 위한 세션 스토어 생성
-const sessionStore = new MySQLStore({
-  host: process.env.DB_CONFIG_HOST,
-  port: parseInt(process.env.DB_CONFIG_PORT ?? '3306', 10),
-  user: process.env.DB_CONFIG_USER,
-  password: process.env.DB_CONFIG_PASSWORD,
-  database: process.env.DB_CONFIG_DATABASE,
-});
+// DB 접속 설정 객체 생성을 위한 Pool (postgreSQL)
+const db_connection: Pool = new Pool({
+  connectionString: process.env.DB_CONNECTION_STRING,
+})
+
+
+// // DB 접속 정보 설정 및 접속 (mysql)
+// const db_connection: Pool = mysql.createPool({
+//   host: process.env.DB_CONFIG_HOST,
+//   user: process.env.DB_CONFIG_USER,
+//   password: process.env.DB_CONFIG_PASSWORD,
+//   database: process.env.DB_CONFIG_DATABASE,
+//   port: parseInt(process.env.DB_CONFIG_PORT ?? '3306', 10),
+// });
+
+// // DB에 세션을 저장하기 위한 세션 스토어 생성 (mysql)
+// const sessionStore = new MySQLStore({
+//   host: process.env.DB_CONFIG_HOST,
+//   port: parseInt(process.env.DB_CONFIG_PORT ?? '3306', 10),
+//   user: process.env.DB_CONFIG_USER,
+//   password: process.env.DB_CONFIG_PASSWORD,
+//   database: process.env.DB_CONFIG_DATABASE,
+// });
 
 const applicationName = process.env.APPLICATION_NAME ?? 'noname app';
 const port = parseInt(process.env.PORT ?? '3000', 10);
@@ -72,5 +80,5 @@ export {
   kakaoClientSecret,
   kakaoCallbackURL,
   db_connection,
-  sessionStore,
+  // sessionStore,
 };

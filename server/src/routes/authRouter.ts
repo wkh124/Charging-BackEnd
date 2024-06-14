@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import passport from '../middleware/passport';
-import { sessionStore } from '../../config';
+// import { sessionStore } from '../../config';
 
 const router = express.Router();
 
