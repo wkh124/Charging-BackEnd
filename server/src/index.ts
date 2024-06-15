@@ -23,16 +23,18 @@ app.use(express.urlencoded({ extended: false })); // URL-encoded 형식으로 �
 app.use(cookieParser()); // 요청에 포함된 쿠키를 파싱하여 req.cookies 객체에 저장
 app.use(express.static(path.join(__dirname, '../public'))); // 정적 파일을 제공할 디렉토리 경로를 지정, 해당 경로에서 정적 파일을 찾고 요청에 따라 클라이언트 전달
 
+
+// supabase postgreSQL DB 연결
 const connectToSupabase = async () => {
   try {
     await db_connection.connect();
-    console.log('Connected to Supabase PostgreSQL database');
+    console.log('Supabase PostgreSQL database 연결 성공');
 
     // await db_connection.end(); // 연결 종료
     // console.log('Disconnected from Supabase PostgreSQL database');
 
   } catch (err) {
-    console.error('Error connecting to Supabase PostgreSQL database', err);
+    console.error('Supabase PostgreSQL database 연결 실패', err);
   }
 }
 
@@ -82,11 +84,11 @@ app.use(passport.session()); // req.session 객체에 passport정보를 추가 �
 // passport.session()이 실행되면, 세션쿠키 정보를 바탕으로 해서 passport/index.ts의 deserializeUser()가 실행하게 한다.
 
 // 보안 강화 미들웨어 연결
-app.use(csrf()); // Cross-Site Request Forgery(CSRF) 공격을 방어, 각 요청에 대해 CSRF 토큰이 생성되고 이를 사용하여 요청의 유효성을 검사, 요청 보호를 위함
-app.use((req, res, next) => {
-  res.locals.csrfToken = req.csrfToken(); // CSRF 토큰을 req의 csrfToken() 메서드를 통해 생성, 이를 res의 locals 속성에 저장, 템플릿 엔진에서 해당 토큰을 사용하여 CSRF 공격 방어 가능
-  next();
-});
+// app.use(csrf()); // Cross-Site Request Forgery(CSRF) 공격을 방어, 각 요청에 대해 CSRF 토큰이 생성되고 이를 사용하여 요청의 유효성을 검사, 요청 보호를 위함
+// app.use((req, res, next) => {
+//   res.locals.csrfToken = req.csrfToken(); // CSRF 토큰을 req의 csrfToken() 메서드를 통해 생성, 이를 res의 locals 속성에 저장, 템플릿 엔진에서 해당 토큰을 사용하여 CSRF 공격 방어 가능
+//   next();
+// });
 // app.use(passport.authenticate('session')); // 세션을 관리하고 사용자의 인증 상태를 유지합니다. 이 경우에는 세션을 사용하여 사용자가 로그인되어 있는지 확인하고, 로그인된 사용자에 대한 정보를 요청 객체(req)에 저장
 
 // 라우터 연결
