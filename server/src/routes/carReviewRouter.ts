@@ -55,7 +55,7 @@ router.get('/cars/:carId/reviews/:reviewId', async (req: Request, res: Response)
     try {
         const reviewId = req.params.reviewId;
         const { rows } = await db_connection.query('SELECT content FROM car_board WHERE id=$1', [reviewId]);
-        const author= await db_connection.query('SELECT nickname FROM "users" LEFT JOIN "car_board" ON "users".user_id="car_board".user_id WHERE "car_board".id = $1', [reviewId])
+        const author= await db_connection.query('SELECT "nickName" FROM "users" LEFT JOIN "car_board" ON "users".user_id="car_board".user_id WHERE "car_board".id = $1', [reviewId])
 
         if (Number(rows.length) === 0) {
             return res.status(404).json({ message: '게시글이 존재하지 않습니다.' });
@@ -78,7 +78,7 @@ router.get('/cars/:carId/reviews', async (req: Request, res: Response) => {
         [carId]
       );
       const authorResult: QueryResult = await db_connection.query(
-        'SELECT nickname FROM "users" JOIN "car_board" ON "users".user_id = "car_board".user_id WHERE "car_board".car_id = $1',
+        'SELECT "nickName" FROM "users" JOIN "car_board" ON "users".user_id = "car_board".user_id WHERE "car_board".car_id = $1',
         [carId]
       );
   

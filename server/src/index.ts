@@ -24,23 +24,6 @@ app.use(cookieParser()); // 요청에 포함된 쿠키를 파싱하여 req.cooki
 app.use(express.static(path.join(__dirname, '../public'))); // 정적 파일을 제공할 디렉토리 경로를 지정, 해당 경로에서 정적 파일을 찾고 요청에 따라 클라이언트 전달
 
 
-// supabase postgreSQL DB 연결
-const connectToSupabase = async () => {
-  try {
-    await db_connection.connect();
-    console.log('Supabase PostgreSQL database 연결 성공');
-
-    // await db_connection.end(); // 연결 종료
-    // console.log('Disconnected from Supabase PostgreSQL database');
-
-  } catch (err) {
-    console.error('Supabase PostgreSQL database 연결 실패', err);
-  }
-}
-
-connectToSupabase();
-
-
 // postgreSQL에 session 저장 설정
 const secretKey = crypto.randomBytes(32).toString('hex'); // secrete 값은 보안을 강화하기 위해서 랜덤하고 예측하기 어려운 값이어야 함
 app.use(

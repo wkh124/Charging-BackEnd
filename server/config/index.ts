@@ -6,6 +6,7 @@ import { Pool } from 'pg';
 import commonErrors from '../utils/commonErrors';
 import AppError from '../utils/appError';
 
+
 // NODE_ENV 값을 이용해서 production(배포) 모드, development(개발) 두 가지로 나누어 실행하게 됨
 // 개발모드: 파일 캐싱 방지, 디버그를 위한 상세한 에러 메세지 보이기 등의 개발에 도움을 줄 수 있는 환경으로 설정
 process.env.NODE_ENV = process.env.NODE_ENV ?? 'development';
@@ -36,8 +37,24 @@ const db_connection: Pool = new Pool({
   ssl: {
     rejectUnauthorized: false,
   },
+  options: '-c search_path=public', // Search path 설정
 });
 
+// DB 연결
+const connectToSupabase = async () => {
+  try {
+
+    await db_connection.connect();
+    console.log('Supabase PostgreSQL database 연결 성공');
+
+    // await db_connection.end(); // 연결 종료
+    // console.log('Disconnected from Supabase PostgreSQL database');
+
+  } catch (err) {
+    console.error('Supabase PostgreSQL database 연결 실패', err);
+  }
+}
+connectToSupabase();
 
 
 // DB 접속 설정 객체 생성을 위한 Pool, Connection string으로 연결 (postgreSQL)
@@ -47,7 +64,6 @@ const db_connection: Pool = new Pool({
 //     rejectUnauthorized: false,
 //   },
 // });
-
 
 // // DB 접속 정보 설정 및 접속 (mysql)
 // const db_connection: Pool = mysql.createPool({
