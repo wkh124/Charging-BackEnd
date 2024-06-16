@@ -25,7 +25,7 @@ import crypto from 'crypto';
 import AppError from '../../utils/appError';
 import commonErrors from '../../utils/commonErrors';
 
-//구글 passport
+// 구글 passport
 passport.use(
   new GoogleStrategy(
     {
@@ -59,8 +59,8 @@ passport.use(
         if (userRows.length > 0) {
           return cb(null, userRows[0]);
         } else {
-          let uuid = crypto.randomUUID();
-          let nickName = '익명' + nanoid();
+          const uuid = crypto.randomUUID();
+          const nickName = '익명' + nanoid();
           await userDao.createUser(
             uuid,
             email,
@@ -70,6 +70,7 @@ passport.use(
           );
 
           const user = {
+            user_id: uuid,  // 여기서 user_id를 uuid로 설정합니다.
             email,
             displayName: profile.displayName,
           };
@@ -82,7 +83,7 @@ passport.use(
   ),
 );
 
-//카카오 passport
+// 카카오 passport
 passport.use(
   new KakaoStrategy(
     {
@@ -114,8 +115,8 @@ passport.use(
         if (userRows.length > 0) {
           return cb(null, userRows[0]);
         } else {
-          let uuid = crypto.randomUUID();
-          let nickName = '익명' + nanoid();
+          const uuid = crypto.randomUUID();
+          const nickName = '익명' + nanoid();
           await userDao.createUser(
             uuid,
             profile._json.kakao_account.email,
@@ -125,6 +126,7 @@ passport.use(
           );
 
           const user = {
+            user_id: uuid,  // 여기서 user_id를 uuid로 설정합니다.
             email: profile._json.kakao_account.email,
             displayName: profile.displayName,
           };
@@ -137,7 +139,7 @@ passport.use(
   ),
 );
 
-//네이버 passport
+// 네이버 passport
 passport.use(
   new NaverStrategy(
     {
@@ -170,8 +172,8 @@ passport.use(
         if (userRows.length > 0) {
           return cb(null, userRows[0]);
         } else {
-          let uuid = crypto.randomUUID();
-          let nickName = '익명' + nanoid();
+          const uuid = crypto.randomUUID();
+          const nickName = '익명' + nanoid();
           await userDao.createUser(
             uuid,
             email,
@@ -181,6 +183,7 @@ passport.use(
           );
 
           const user = {
+            user_id: uuid,  // 여기서 user_id를 uuid로 설정합니다.
             email,
             displayName: profile.name,
           };
@@ -194,15 +197,14 @@ passport.use(
 );
 
 passport.serializeUser(function (user: any, cb: (err: any, id?: any) => void) {
+  console.log('serializeUser user:', user);
   process.nextTick(function () {
     cb(null, { user_id: user.user_id });
   });
 });
 
-passport.deserializeUser(function (
-  user: any,
-  cb: (err: any, user?: any) => void,
-) {
+passport.deserializeUser(function (user: any, cb: (err: any, user?: any) => void) {
+  console.log('deserializeUser user:', user);
   process.nextTick(function () {
     return cb(null, user);
   });
