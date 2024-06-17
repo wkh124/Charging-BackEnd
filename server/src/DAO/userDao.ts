@@ -14,7 +14,6 @@ interface User {
 
 class userDao {
     //유저 찾기
-    // client.query('SET search_path TO public')
     static async findUser(email: string, platform: string): Promise<User[]> {
         const { rows } = await db_connection.query('SELECT * FROM users WHERE platform_type = $1 AND email = $2', [
             platform,
@@ -23,11 +22,11 @@ class userDao {
         return rows;
     }
 
-    static async findUserbyId(id: string): Promise<User[]> {
+    static async findUserById(user_id: string): Promise<User | null> {
         const { rows } = await db_connection.query('SELECT * FROM users WHERE user_id = $1', [
-            id
+            user_id
         ]);
-        return rows;
+        return rows.length > 0 ? rows[0] : null;
     }
 
     // 유저 생성
@@ -47,7 +46,7 @@ class userDao {
         );
     }
 
-    // 유저 soft_delete -> 요거 soft delete한 다음에 어떻게???? 
+    // 유저 soft_delete
     static async deleteUser(userId: string): Promise<void> {
         await db_connection.query(
             `UPDATE users SET deleted_at = CURRENT_TIMESTAMP WHERE user_id = $1`,

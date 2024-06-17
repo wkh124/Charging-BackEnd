@@ -20,7 +20,7 @@ class mapCommentDao {
     }
 
     // 특정 충전기의 댓글 가져오기
-    static async getCommentsByChargerId(map_id: string): Promise<mapComment[]> {
+    static async getCommentsByMapId(map_id: string): Promise<mapComment[]> {
         const { rows } = await db_connection.query(
             `SELECT * FROM map_comment WHERE map_id = $1 AND deleted_at IS NULL ORDER BY created_at DESC`,
             [map_id]

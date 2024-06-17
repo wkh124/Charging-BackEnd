@@ -35,7 +35,7 @@ mapCommentRouter.get('/map-comments/:map_id', async (req: Request, res: Response
     const { map_id } = req.params;
 
     try {
-        const comments = await mapCommentDao.getCommentsByChargerId(map_id);
+        const comments = await mapCommentDao.getCommentsByMapId(map_id);
         res.status(200).json(comments);
     } catch (err) {
         console.error(err);
