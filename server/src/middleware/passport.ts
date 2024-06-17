@@ -18,6 +18,7 @@ import {
   naverClientID,
   naverClientSecret,
   naverCallbackURL,
+  db_connection,
 } from '../../config';
 import { userDao } from '../DAO';
 import { nanoid } from 'nanoid';
@@ -43,7 +44,7 @@ passport.use(
     ) {
       try {
         const email = profile.emails?.[0].value;
-
+        console.log(email)
         if (!email) {
           return cb(
             new AppError(
@@ -57,6 +58,7 @@ passport.use(
         const userRows = await userDao.findUser(email, 'google');
 
         if (userRows.length > 0) {
+          console.log(userRows[0]);
           return cb(null, userRows[0]);
         } else {
           const uuid = crypto.randomUUID();
@@ -70,10 +72,11 @@ passport.use(
           );
 
           const user = {
-            user_id: uuid,  // 여기서 user_id를 uuid로 설정합니다.
-            email,
-            displayName: profile.displayName,
+            user_id: uuid,
+            email:profile.emails?.[0].value,
+            displayName:profile.displayName  // 여기서 user_id를 uuid로 설정합니다.
           };
+          console.log(user);
           return cb(null, user);
         }
       } catch (err) {
@@ -198,16 +201,26 @@ passport.use(
 
 passport.serializeUser(function (user: any, cb: (err: any, id?: any) => void) {
   console.log('serializeUser user:', user);
-  process.nextTick(function () {
-    cb(null, { user_id: user.user_id });
-  });
+
+  if (!user || !user.user_id) {
+    return cb(new Error('User object or user_id is not defined'));
+  }
+    cb(null, {user_id: user.user_id })
 });
 
-passport.deserializeUser(function (user: any, cb: (err: any, user?: any) => void) {
-  console.log('deserializeUser user:', user);
-  process.nextTick(function () {
+passport.deserializeUser(async function(user_id: any, cb: (err: any, user?: any) => void) {
+  console.log('deserializeUser user:', user_id);
+  try {
+    const user = await userDao.findUserbyId(user_id);
+    if (!user) {
+      return cb(new Error('User not found'));
+    }
     return cb(null, user);
-  });
+  } catch (err) {
+    return cb(err);
+  }
 });
+
+
 
 export default passport;

@@ -23,6 +23,13 @@ class userDao {
         return rows;
     }
 
+    static async findUserbyId(id: string): Promise<User[]> {
+        const { rows } = await db_connection.query('SELECT * FROM users WHERE user_id = $1', [
+            id
+        ]);
+        return rows;
+    }
+
     // 유저 생성
     static async createUser(uuid: string, email: string, platform: string, displayName: string, nickName: string): Promise<void> {
         await db_connection.query(

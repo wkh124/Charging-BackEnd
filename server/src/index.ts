@@ -31,12 +31,6 @@ app.use(
       tableName: 'sessions',
       schemaName: 'public',
       createTableIfMissing: true,
-      customColumns: {
-        sid: 'sid',
-        user_id: 'user_id',
-        session: 'sess',
-        expires: 'expire',
-      },
     }),
     secret: secretKey,
     resave: false,
@@ -48,6 +42,7 @@ app.use(
     },
   }),
 );
+
 
 // passport 연결
 app.use(passport.initialize());
