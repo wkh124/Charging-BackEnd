@@ -13,7 +13,7 @@ interface AuthenticatedRequest extends Request {
 // 댓글 생성
 mapCommentRouter.post('/map-comments', ensureAuthenticated, async (req: Request, res: Response) => {
     const authReq = req as AuthenticatedRequest;
-    const { charger_id, comment } = req.body;
+    const { map_id, comment } = req.body;
 
     if (!authReq.user) {
         return res.status(401).json({ error: '인증되지 않음' });
@@ -22,7 +22,7 @@ mapCommentRouter.post('/map-comments', ensureAuthenticated, async (req: Request,
     const user_id = authReq.user.user_id;
 
     try {
-        await mapCommentDao.createComment(charger_id, user_id, comment);
+        await mapCommentDao.createComment(map_id, user_id, comment);
         res.status(201).json({ message: '댓글이 성공적으로 생성되었습니다.' });
     } catch (err) {
         console.error(err);
@@ -31,11 +31,11 @@ mapCommentRouter.post('/map-comments', ensureAuthenticated, async (req: Request,
 });
 
 // 특정 충전기의 댓글 가져오기
-mapCommentRouter.get('/map-comments/:charger_id', async (req: Request, res: Response) => {
-    const { charger_id } = req.params;
+mapCommentRouter.get('/map-comments/:map_id', async (req: Request, res: Response) => {
+    const { map_id } = req.params;
 
     try {
-        const comments = await mapCommentDao.getCommentsByChargerId(charger_id);
+        const comments = await mapCommentDao.getCommentsByChargerId(map_id);
         res.status(200).json(comments);
     } catch (err) {
         console.error(err);

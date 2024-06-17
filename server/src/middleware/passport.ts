@@ -208,19 +208,14 @@ passport.serializeUser(function (user: any, cb: (err: any, id?: any) => void) {
     cb(null, {user_id: user.user_id })
 });
 
-passport.deserializeUser(async function(user_id: any, cb: (err: any, user?: any) => void) {
-  console.log('deserializeUser user:', user_id);
-  try {
-    const user = await userDao.findUserbyId(user_id);
-    if (!user) {
-      return cb(new Error('User not found'));
-    }
+passport.deserializeUser(function (
+  user: any,
+  cb: (err: any, user?: any) => void,
+) {
+  process.nextTick(function () {
     return cb(null, user);
-  } catch (err) {
-    return cb(err);
-  }
+  });
 });
-
 
 
 export default passport;
