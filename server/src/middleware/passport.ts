@@ -1,5 +1,5 @@
 import passport from 'passport';
-import { Strategy as GoogleStrategy, Profile } from 'passport-google-oauth20';
+import { Strategy as GoogleStrategy, Profile as GoogleProfile } from 'passport-google-oauth20';
 import { Strategy as KakaoStrategy, Profile as KakaoProfile } from 'passport-kakao';
 import { Strategy as NaverStrategy, Profile as NaverProfile } from 'passport-naver-v2';
 import {
@@ -27,7 +27,7 @@ function isWithinLastMonth(date: Date): boolean {
 }
 
 // 유저 로그인 또는 생성 처리하는 헬퍼 함수
-async function handleUserLoginOrCreate(email: string, platform: string, profile: any, cb: any) {
+async function handleUserLoginOrCreate(email: string, platform: string, profile: any, cb: (err: any, user?: any) => void) {
   try {
     const userRows = await userDao.findUser(email, platform);
 
@@ -80,7 +80,7 @@ passport.use(
       state: true,
       scope: ['profile', 'email'],
     },
-    async (accessToken, refreshToken, profile, cb) => {
+    async (accessToken: string, refreshToken: string, profile: GoogleProfile, cb: (err: any, user?: any) => void) => {
       const email = profile.emails?.[0].value;
       if (!email) {
         return cb(new AppError(commonErrors.resourceNotFoundError, '이메일이 존재하지 않습니다.', 400));
@@ -98,7 +98,7 @@ passport.use(
       clientSecret: kakaoClientSecret,
       callbackURL: kakaoCallbackURL,
     },
-    async (accessToken, refreshToken, profile, cb) => {
+    async (accessToken: string, refreshToken: string, profile: KakaoProfile, cb: (err: any, user?: any) => void) => {
       const email = profile._json.kakao_account.email;
       if (!email) {
         return cb(new AppError(commonErrors.resourceNotFoundError, '이메일이 존재하지 않습니다.', 400));
@@ -118,7 +118,7 @@ passport.use(
       state: true,
       scope: ['profile', 'email'],
     },
-    async (accessToken, refreshToken, profile, cb) => {
+    async (accessToken: string, refreshToken: string, profile: NaverProfile, cb: (err: any, user?: any) => void) => {
       const email = profile.email;
       if (!email) {
         return cb(new AppError(commonErrors.resourceNotFoundError, '이메일이 존재하지 않습니다.', 400));

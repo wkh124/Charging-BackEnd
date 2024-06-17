@@ -13,7 +13,7 @@ interface User {
 }
 
 class userDao {
-    //유저 찾기
+    // 유저 찾기
     static async findUser(email: string, platform: string): Promise<User[]> {
         const { rows } = await db_connection.query('SELECT * FROM users WHERE platform_type = $1 AND email = $2', [
             platform,
@@ -38,7 +38,7 @@ class userDao {
         );
     }
 
-    // 유저업데이트
+    // 유저 업데이트
     static async updateUser(userId: string, displayName: string, nickName: string): Promise<void> {
         await db_connection.query(
             `UPDATE users SET "displayName" = $1, "nickName" = $2, updated_at = CURRENT_TIMESTAMP WHERE user_id = $3`,
@@ -54,6 +54,13 @@ class userDao {
         );
     }
 
+    // deleted_at을 null로 업데이트
+    static async updateDeletedAtToNull(userId: string): Promise<void> {
+        await db_connection.query(
+            `UPDATE users SET deleted_at = NULL WHERE user_id = $1`,
+            [userId]
+        );
+    }
 }
 
 export default userDao;
