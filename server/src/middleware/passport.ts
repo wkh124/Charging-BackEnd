@@ -25,7 +25,7 @@ import crypto from 'crypto';
 import AppError from '../../utils/appError';
 import commonErrors from '../../utils/commonErrors';
 
-// 한 달 이내인지 확인하는 헬퍼 함수
+// 한 달 이내인지 확인하는 함수
 function isWithinLastMonth(date: Date): boolean {
   const oneMonthAgo = new Date();
   oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
@@ -45,10 +45,10 @@ async function handleUserLoginOrCreate(
     if (userRows.length > 0) {
       const user = userRows[0];
 
-      // if (user.deleted_at && isWithinLastMonth(new Date(user.deleted_at))) {
-      //   await userDao.updateDeletedAtToNull(user.user_id);
-      //   return cb(null, user);
-      // }
+      if (user.deleted_at && isWithinLastMonth(new Date(user.deleted_at))) {
+        await userDao.updateDeletedAtToNull(user.user_id);
+        return cb(null, user);
+      }
 
       if (user.deleted_at) {
         const uuid = crypto.randomUUID();
