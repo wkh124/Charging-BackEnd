@@ -8,7 +8,8 @@ import profileRouter from './profileRouter';
 import carReviewRouter from './carReviewRouter';
 import carRouter from './carRouter';
 import mapCommentRouter from './mapCommentRouter';
+import chargingMapRouter from './chargingMapRouter';
 
 
 
-export { authRouter, stateRouter, profileRouter, carReviewRouter , carRouter , mapCommentRouter};
+export { authRouter, stateRouter, profileRouter, carReviewRouter , carRouter , mapCommentRouter, chargingMapRouter};

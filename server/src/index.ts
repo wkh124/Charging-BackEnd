@@ -11,7 +11,7 @@ import cookieParser from 'cookie-parser';
 import csrf from 'csurf';
 
 import { port, db_connection } from '../config';
-import { authRouter, stateRouter, profileRouter, carReviewRouter, carRouter, mapCommentRouter } from './routes';
+import { authRouter, stateRouter, profileRouter, carReviewRouter, carRouter, mapCommentRouter, chargingMapRouter} from './routes';
 
 const app = express();
 
@@ -59,8 +59,9 @@ app.use('/', stateRouter);
 app.use('/', authRouter);
 app.use('/', profileRouter);
 app.use('/', carReviewRouter);
-app.use('/' , carRouter);
+app.use('/', carRouter);
 app.use('/', mapCommentRouter);
+app.use('/', chargingMapRouter);
 
 // 오류 처리 미들웨어
 app.use((req, res, next) => {

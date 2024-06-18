@@ -33,7 +33,7 @@ class userDao {
     static async createUser(uuid: string, email: string, platform: string, displayName: string, nickName: string): Promise<void> {
         await db_connection.query(
             `INSERT INTO users (user_id, platform_type, email, "displayName", "nickName", verified_email, created_at, updated_at, deleted_at)
-            VALUES ($1, $2, $3, $4, $5, false, CURRENT_TIMESTAMP, NULL, NULL)`,
+            VALUES ($1, $2, $3, $4, $5, false, timezone('Asia/Seoul', CURRENT_TIMESTAMP), NULL, NULL)`,
             [uuid, platform, email, displayName, nickName]
         );
     }
@@ -41,7 +41,7 @@ class userDao {
     // 유저 업데이트
     static async updateUser(userId: string, displayName: string, nickName: string): Promise<void> {
         await db_connection.query(
-            `UPDATE users SET "displayName" = $1, "nickName" = $2, updated_at = CURRENT_TIMESTAMP WHERE user_id = $3`,
+            `UPDATE users SET "displayName" = $1, "nickName" = $2, updated_at = timezone('Asia/Seoul', CURRENT_TIMESTAMP) WHERE user_id = $3`,
             [displayName, nickName, userId]
         );
     }
@@ -49,7 +49,7 @@ class userDao {
     // 유저 soft_delete
     static async deleteUser(userId: string): Promise<void> {
         await db_connection.query(
-            `UPDATE users SET deleted_at = CURRENT_TIMESTAMP WHERE user_id = $1`,
+            `UPDATE users SET deleted_at = timezone('Asia/Seoul', CURRENT_TIMESTAMP) WHERE user_id = $1`,
             [userId]
         );
     }
