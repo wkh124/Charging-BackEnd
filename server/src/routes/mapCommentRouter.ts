@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { mapCommentDao }from '../DAO';
+import { mapCommentDao } from '../DAO';
 import { ensureAuthenticated } from '../middleware/authUser';
 
 const mapCommentRouter = express.Router();
@@ -30,12 +30,14 @@ mapCommentRouter.post('/map-comments', ensureAuthenticated, async (req: Request,
     }
 });
 
-// 특정 충전기의 댓글 가져오기
+// 특정 충전기의 댓글 가져오기 (오프셋 기반 페이지네이션 추가)
 mapCommentRouter.get('/map-comments/:map_id', async (req: Request, res: Response) => {
     const { map_id } = req.params;
+    const page = parseInt(req.query.page as string, 10) || 1;
+    const limit = parseInt(req.query.limit as string, 10) || 20;
 
     try {
-        const comments = await mapCommentDao.getCommentsByMapId(map_id);
+        const comments = await mapCommentDao.getCommentsByMapId(map_id, page, limit);
         res.status(200).json(comments);
     } catch (err) {
         console.error(err);

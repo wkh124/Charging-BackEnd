@@ -8,7 +8,7 @@ import createError from 'http-errors';
 import path from 'path';
 import logger from 'morgan';
 import cookieParser from 'cookie-parser';
-import csrf from 'csurf';
+import cors from 'cors';
 
 import { port, db_connection } from '../config';
 import { authRouter, stateRouter, profileRouter, carReviewRouter, carRouter, mapCommentRouter, chargingMapRouter} from './routes';
@@ -16,6 +16,7 @@ import { authRouter, stateRouter, profileRouter, carReviewRouter, carRouter, map
 const app = express();
 
 // 부가 기능 미들웨어 연결
+app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

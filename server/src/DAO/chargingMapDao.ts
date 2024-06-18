@@ -22,17 +22,20 @@ class ChargingMapDao {
   static async getChargerByStation(station: string, page: number, limit: number): Promise<ChargingMap[]> {
     const offset = (page - 1) * limit;
     const { rows } = await db_connection.query(
-      `SELECT DISTINCT TRIM("statNm") AS "statNm", 
-        MAX(addr) as addr, 
-        MAX(zcode) as zcode, 
-        MAX("chgerType") as "chgerType",
-        MAX("busiNm") as "busiNm",
-        MAX(kind) as kind,
-        MAX("parkingFree") as parkingFree
+      `SELECT DISTINCT TRIM("statNm") AS "statNm",
+        "statId",
+        "chgerType",
+        "addr", 
+        "lat", 
+        "lng", 
+        "busiNm", 
+        "zcode", 
+        "kind", 
+        "parkingFree", 
+        "limitYn"
       FROM charging_map 
       WHERE REPLACE("statNm", ' ', '')
       LIKE '%' || REPLACE($1, ' ', '') || '%'
-      GROUP BY TRIM("statNm")
       LIMIT $2 OFFSET $3`,
       [station, limit, offset],
     );
