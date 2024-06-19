@@ -13,7 +13,6 @@ interface AuthenticatedRequest extends Request {
     };
 }
 
-// POST route to handle inserting/updating reaction
 reactionRouter.post('/cars/:carId/reviews/:reviewId/review-likes', ensureAuthenticated, async (req: Request, res: Response) => {
     const authReq = req as AuthenticatedRequest;
 
@@ -23,6 +22,8 @@ reactionRouter.post('/cars/:carId/reviews/:reviewId/review-likes', ensureAuthent
 
     const user_id = authReq.user.user_id;
     const review_id = req.params.reviewId;
+    console.log(user_id);
+    console.log(review_id);
 
     try {
         await commentReactionDao.insertOrUpdateReaction(review_id, 'thumbs-up', user_id);

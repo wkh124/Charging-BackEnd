@@ -11,12 +11,17 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
 import { port, db_connection } from '../config';
-import { authRouter, stateRouter, profileRouter, carReviewRouter, carRouter, mapCommentRouter, chargingMapRouter} from './routes';
+import { authRouter, stateRouter, profileRouter, carReviewRouter, carRouter, mapCommentRouter, chargingMapRouter, profilePicRouter, commentLikesRouter, userReviewRouter} from './routes';
 
 const app = express();
+let corsOptions = {
+  origin: "http://localhost:5173", // 출처 허용 옵션
+  credentials: true, // 사용자 인증이 필요한 리소스(쿠키 ..등) 접근
+};
 
 // 부가 기능 미들웨어 연결
-app.use(cors());
+app.use(cors(corsOptions));
+// 부가 기능 미들웨어 연결
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -63,6 +68,11 @@ app.use('/', carReviewRouter);
 app.use('/', carRouter);
 app.use('/', mapCommentRouter);
 app.use('/', chargingMapRouter);
+app.use('/', profilePicRouter);
+app.use('/', commentLikesRouter);
+app.use('/', userReviewRouter);
+
+
 
 // 오류 처리 미들웨어
 app.use((req, res, next) => {
