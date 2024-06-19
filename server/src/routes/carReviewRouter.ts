@@ -7,22 +7,11 @@ import { QueryResult } from 'pg';
 const router = express.Router();
 
 // 사용자의 인증된 정보를 표현하는 인터페이스
-interface AuthenticatedUser {
-    user_id: string;
-    displayName: string;
-    nickName: string;
-    email: string;
-    platform_type: string;
-    verified_email: number;
-    created_at: Date;
-    updated_at: Date | null;
-    deleted_at: Date | null;
-  }
-  
-  // Request 인터페이스를 확장하여 인증된 사용자 정보를 포함하는 인터페이스 정의
-  interface AuthenticatedRequest extends Request {
-    user?: AuthenticatedUser;
-  }
+interface AuthenticatedRequest extends Request {
+  user?: {
+      user_id: string;
+  };
+}
 
 // 리뷰 생성 라우트
 router.post('/cars/:carId/reviews', ensureAuthenticated, async (req: Request, res: Response) => {
@@ -52,54 +41,91 @@ router.post('/cars/:carId/reviews', ensureAuthenticated, async (req: Request, re
 
 //리뷰 가져오는 라우터
 router.get('/cars/:carId/reviews/:reviewId', async (req: Request, res: Response) => {
-    try {
-        const reviewId = req.params.reviewId;
-        const { rows } = await db_connection.query('SELECT content FROM car_board WHERE id=$1', [reviewId]);
-        const author= await db_connection.query('SELECT "nickName" FROM "users" LEFT JOIN "car_board" ON "users".user_id="car_board".user_id WHERE "car_board".id = $1', [reviewId])
+  try {
+      const reviewId = req.params.reviewId;
+      
+      const { rows: contentRows } = await db_connection.query(
+          `SELECT 
+              c.content, 
+              (SELECT COUNT(*) FROM comment_reaction i WHERE i.comment_id = c.id) AS reaction_count 
+           FROM car_board c 
+           WHERE c.id = $1 AND c.deleted_at IS NULL`,
+          [reviewId]
+      );
 
-        if (Number(rows.length) === 0) {
-            return res.status(404).json({ message: '게시글이 존재하지 않습니다.' });
-        }
+      const { rows: authorRows } = await db_connection.query(
+          `SELECT u."nickName" 
+           FROM "users" u 
+           LEFT JOIN "car_board" c ON u.user_id = c.user_id 
+           WHERE c.id = $1 AND c.deleted_at IS NULL`,
+          [reviewId]
+      );
 
-        res.status(201).json({ message: '게시글을 성공적으로 가져왔습니다.', content: rows, author:author });
-    } catch (error) {
-        console.error('Error creating post:', error);
-        res.status(500).json({ message: 'Internal Server Error' });
-    }
+      if (contentRows.length === 0) {
+          return res.status(404).json({ message: '게시글이 존재하지 않습니다.' });
+      }
+
+      if (authorRows.length === 0) {
+          return res.status(404).json({ message: '작성자를 찾을 수 없습니다.' });
+      }
+
+      const content = contentRows[0].content;
+      const reactionCount = contentRows[0].reaction_count;
+      const author = authorRows[0].nickName;
+
+      res.status(200).json({
+          message: '게시글을 성공적으로 가져왔습니다.',
+          content,
+          reactionCount,
+          author
+      });
+  } catch (error) {
+      console.error('Error fetching post:', error);
+      res.status(500).json({ message: 'Internal Server Error' });
+  }
 });
 
-//한 차량에 대한 모든 리뷰 가져오는 라우터
+
 router.get('/cars/:carId/reviews', async (req: Request, res: Response) => {
-    try {
-      const carId = req.params.carId;
-  
-      const reviewResult : QueryResult = await db_connection.query(
-        'SELECT content FROM car_board WHERE car_id = $1',
-        [carId]
-      );
-      const authorResult: QueryResult = await db_connection.query(
-        'SELECT "nickName" FROM "users" JOIN "car_board" ON "users".user_id = "car_board".user_id WHERE "car_board".car_id = $1',
-        [carId]
-      );
-  
-      if (reviewResult.rows.length === 0) {
-        return res.status(404).json({ message: '게시글이 존재하지 않습니다.' });
-      }
-  
-      const reviewsWithUsers = reviewResult.rows.map((review, index) => ({
-        content: review.content,
-        author: authorResult.rows[index]?.nickname || 'Unknown'
-      }));
-  
-      res.status(200).json({
-        message: '게시글을 성공적으로 가져왔습니다.',
-        reviews: reviewsWithUsers
-      });
-    } catch (error) {
-      console.error('Error fetching reviews:', error);
-      res.status(500).json({ message: 'Internal Server Error' });
+  try {
+    const carId = req.params.carId;
+
+    const reviewQuery = `
+      SELECT 
+        c.content, 
+        (SELECT COUNT(*) FROM comment_reaction i WHERE i.comment_id = c.id AND i.status = $2) AS reaction_count 
+      FROM car_board c 
+      WHERE c.car_id = $1 AND c.deleted_at IS NULL
+    `;
+    const authorQuery = `
+      SELECT u."nickName" 
+      FROM "users" u 
+      JOIN "car_board" c ON u.user_id = c.user_id 
+      WHERE c.car_id = $1 AND c.deleted_at IS NULL
+    `;
+
+    const reviewResult: QueryResult = await db_connection.query(reviewQuery, [carId, 'ACTIVE']);
+    const authorResult: QueryResult = await db_connection.query(authorQuery, [carId]);
+
+    if (reviewResult.rows.length === 0) {
+      return res.status(404).json({ message: '게시글이 존재하지 않습니다.' });
     }
-  });
+
+    const reviewsWithUsers = reviewResult.rows.map((review, index) => ({
+      content: review.content,
+      reactionCount: review.reaction_count,
+      author: authorResult.rows[index]?.nickName || 'Unknown'
+    }));
+
+    res.status(200).json({
+      message: '게시글을 성공적으로 가져왔습니다.',
+      reviews: reviewsWithUsers
+    });
+  } catch (error) {
+    console.error('Error fetching reviews:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
 
 
 // 게시글 수정 라우터
@@ -114,18 +140,7 @@ router.put('/cars/:carId/reviews/:reviewId',ensureAuthenticated, async (req: Req
         }
 
         const reviewId = req.params.reviewId;    
-        // const userId = req.user.id;
-
-        // const [rows]: [RowDataPacket[], FieldPacket[]] = await db_connection.query(
-        //     'SELECT user_id FROM car_board WHERE id = ?',
-        //     [reviewId]
-        //   );
-      
-        //   if (rows.length === 0 || rows[0].user_id !== userId) {
-        //     return res.status(404).json({ message: '게시글을 찾을 수 없거나 권한이 없습니다.' });
-        //   }
-
-         const { content } = req.body;
+        const { content } = req.body;
 
         await db_connection.query(
           'UPDATE car_board SET content = $1, created_at = CURRENT_TIMESTAMP WHERE id = $2',

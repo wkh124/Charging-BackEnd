@@ -6,4 +6,5 @@ import chargingMapDao from './chargingMapDao';
 import carsImgDao from './carsImgDao'
 import commentReactionDao from './commentReactionDao';
 
-export { userDao, userCarDao, carsDao, mapCommentDao, chargingMapDao, carsImgDao , commentReactionDao };
+
+export { userDao, userCarDao, carsDao, mapCommentDao, chargingMapDao, carsImgDao , commentReactionDao};

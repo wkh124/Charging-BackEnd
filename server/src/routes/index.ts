@@ -12,9 +12,11 @@ import chargingMapRouter from './chargingMapRouter';
 import carImgRouter from './carImgRouter';
 import commentLikesRouter from './commentLikesRouter';
 import profilePicRouter from './profilePicRouter';
+import userReviewRouter from './userReviewRouter';
 
 
 
 
 
-export { authRouter, stateRouter, profileRouter, carReviewRouter , carRouter , mapCommentRouter, chargingMapRouter, carImgRouter, commentLikesRouter,profilePicRouter};
+
+export { authRouter, stateRouter, profileRouter, carReviewRouter , carRouter , mapCommentRouter, chargingMapRouter, carImgRouter, commentLikesRouter,profilePicRouter, userReviewRouter};
