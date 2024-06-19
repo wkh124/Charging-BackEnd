@@ -42,7 +42,7 @@ class ChargingMapDao {
     return rows
   }
 
-
+  // 충전소 이름 및 지역코드 조회 & 페이지네이션 쿼리
   static async getChrgByStationAndZone(station: string, zone: string, page: number, limit: number): Promise<ChargingMap[]> {
     const offset = (page - 1) * limit;
     const { rows } = await db_connection.query(
@@ -67,7 +67,7 @@ class ChargingMapDao {
     return rows
   }
 
-
+  // 충전소 이름 및 타입 조회 & 페이지네이션 쿼리
   static async getChrgByStationAndType(station: string, type: string, page: number, limit: number): Promise<ChargingMap[]> {
     const offset = (page - 1) * limit;
     const { rows } = await db_connection.query(
@@ -93,6 +93,7 @@ class ChargingMapDao {
   }
 
 
+  // 충전소 이름, 지역코드, 타입 조회 & 페이지네이션 쿼리
   static async getChrgByAllQuery(station: string, zone: string, type: string, page: number, limit: number): Promise<ChargingMap[]> {
     const offset = (page - 1) * limit;
     const { rows } = await db_connection.query(
