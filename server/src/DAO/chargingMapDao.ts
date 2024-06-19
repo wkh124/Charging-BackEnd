@@ -19,7 +19,7 @@ interface ChargingMap {
 
 class ChargingMapDao {
   // 충전소 이름으로 조회 & 페이지네이션 쿼리
-  static async getChargerByStation(station: string, page: number, limit: number): Promise<ChargingMap[]> {
+  static async getChgrByStation(station: string, page: number, limit: number): Promise<ChargingMap[]> {
     const offset = (page - 1) * limit;
     const { rows } = await db_connection.query(
       `SELECT DISTINCT TRIM("statNm") AS "statNm",
@@ -41,6 +41,84 @@ class ChargingMapDao {
     );
     return rows
   }
+
+
+  static async getChrgByStationAndZone(station: string, zone: string, page: number, limit: number): Promise<ChargingMap[]> {
+    const offset = (page - 1) * limit;
+    const { rows } = await db_connection.query(
+      `SELECT DISTINCT TRIM("statNm") AS "statNm",
+        "statId",
+        "chgerType",
+        "addr", 
+        "lat", 
+        "lng", 
+        "busiNm", 
+        "zcode", 
+        "kind", 
+        "parkingFree", 
+        "limitYn"
+      FROM charging_map 
+      WHERE REPLACE(TRIM("statNm"), ' ', '')
+      LIKE '%' || REPLACE($1, ' ', '') || '%'
+      AND zcode = $2
+      LIMIT $3 OFFSET $4`,
+      [station, zone, limit, offset],
+    );
+    return rows
+  }
+
+
+  static async getChrgByStationAndType(station: string, type: string, page: number, limit: number): Promise<ChargingMap[]> {
+    const offset = (page - 1) * limit;
+    const { rows } = await db_connection.query(
+      `SELECT DISTINCT TRIM("statNm") AS "statNm",
+        "statId",
+        "chgerType",
+        "addr", 
+        "lat", 
+        "lng", 
+        "busiNm", 
+        "zcode", 
+        "kind", 
+        "parkingFree", 
+        "limitYn"
+      FROM charging_map 
+      WHERE REPLACE(TRIM("statNm"), ' ', '')
+      LIKE '%' || REPLACE($1, ' ', '') || '%'
+      AND "chgerType" = $2
+      LIMIT $3 OFFSET $4`,
+      [station, type, limit, offset],
+    );
+    return rows
+  }
+
+
+  static async getChrgByAllQuery(station: string, zone: string, type: string, page: number, limit: number): Promise<ChargingMap[]> {
+    const offset = (page - 1) * limit;
+    const { rows } = await db_connection.query(
+      `SELECT DISTINCT TRIM("statNm") AS "statNm",
+        "statId",
+        "chgerType",
+        "addr", 
+        "lat", 
+        "lng", 
+        "busiNm", 
+        "zcode", 
+        "kind", 
+        "parkingFree", 
+        "limitYn"
+      FROM charging_map 
+      WHERE REPLACE(TRIM("statNm"), ' ', '')
+      LIKE '%' || REPLACE($1, ' ', '') || '%'
+      AND zcode = $2
+      AND "chgerType" = $3
+      LIMIT $4 OFFSET $5`,
+      [station, zone, type, limit, offset],
+    );
+    return rows
+  }
 }
+
+
 
 export default ChargingMapDao;
