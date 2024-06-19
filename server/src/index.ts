@@ -11,7 +11,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
 import { port, db_connection } from '../config';
-import { authRouter, stateRouter, profileRouter, carReviewRouter, carRouter, mapCommentRouter, chargingMapRouter} from './routes';
+import { authRouter, stateRouter, profileRouter, carReviewRouter, carRouter, mapCommentRouter, chargingMapRouter, profilePicRouter} from './routes';
 
 const app = express();
 
@@ -63,6 +63,7 @@ app.use('/', carReviewRouter);
 app.use('/', carRouter);
 app.use('/', mapCommentRouter);
 app.use('/', chargingMapRouter);
+app.use('/', profilePicRouter);
 
 // 오류 처리 미들웨어
 app.use((req, res, next) => {
