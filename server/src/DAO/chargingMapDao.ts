@@ -34,7 +34,7 @@ class ChargingMapDao {
         "parkingFree", 
         "limitYn"
       FROM charging_map 
-      WHERE REPLACE("statNm", ' ', '')
+      WHERE REPLACE(TRIM("statNm"), ' ', '')
       LIKE '%' || REPLACE($1, ' ', '') || '%'
       LIMIT $2 OFFSET $3`,
       [station, limit, offset],

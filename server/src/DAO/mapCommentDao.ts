@@ -20,7 +20,7 @@ class mapCommentDao {
     }
 
     // 특정 충전기의 댓글 가져오기 (오프셋 기반 페이지네이션)
-    static async getCommentsByMapId(map_id: string, page: number, limit: number = 20): Promise<mapComment[]> {
+    static async getCommentsByMapId(map_id: string, page: number, limit: number = 10): Promise<mapComment[]> {
         const offset = (page - 1) * limit;
         const { rows } = await db_connection.query(
             `SELECT id, map_id, user_id, comment, created_at, updated_at, deleted_at
