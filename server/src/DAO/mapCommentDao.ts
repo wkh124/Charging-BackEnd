@@ -2,7 +2,7 @@ import { db_connection } from '../../config';
 
 interface mapComment {
     id?: number;
-    charger_id: string;
+    map_id: string;
     user_id: string;
     comment: string;
     created_at?: Date;
@@ -12,19 +12,23 @@ interface mapComment {
 
 class mapCommentDao {
     // 댓글 생성
-    static async createComment(charger_id: string, user_id: string, comment: string): Promise<void> {
+    static async createComment(map_id: string, user_id: string, comment: string): Promise<void> {
         await db_connection.query(
-            `INSERT INTO "mapComment" (charger_id, user_id, comment, created_at) VALUES ($1, $2, $3, CURRENT_TIMESTAMP)`,
-            [charger_id, user_id, comment]
+            `INSERT INTO map_comment (map_id, user_id, comment, created_at) VALUES ($1, $2, $3, timezone('Asia/Seoul', CURRENT_TIMESTAMP))`,
+            [map_id, user_id, comment]
         );
     }
 
-    // 특정 충전기의 댓글 가져오기
-    //deleted_at이 null값이 아니면 가져오는거로 수정
-    static async getCommentsByChargerId(charger_id: string): Promise<mapComment[]> {
+    // 특정 충전기의 댓글 가져오기 (오프셋 기반 페이지네이션)
+    static async getCommentsByMapId(map_id: string, page: number, limit: number = 10): Promise<mapComment[]> {
+        const offset = (page - 1) * limit;
         const { rows } = await db_connection.query(
-            `SELECT * FROM "mapComment" WHERE charger_id = $1 AND deleted_at IS NULL ORDER BY created_at DESC`,
-            [charger_id]
+            `SELECT id, map_id, user_id, comment, created_at, updated_at, deleted_at
+            FROM map_comment
+            WHERE map_id = $1 AND deleted_at IS NULL
+            ORDER BY created_at DESC
+            LIMIT $2 OFFSET $3`,
+            [map_id, limit, offset]
         );
         return rows;
     }
@@ -32,7 +36,7 @@ class mapCommentDao {
     // 댓글 수정
     static async updateComment(comment_id: number, comment: string): Promise<void> {
         await db_connection.query(
-            `UPDATE "mapComment" SET comment = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 AND deleted_at IS NULL`,
+            `UPDATE map_comment SET comment = $1, updated_at = timezone('Asia/Seoul', CURRENT_TIMESTAMP) WHERE id = $2 AND deleted_at IS NULL`,
             [comment, comment_id]
         );
     }
@@ -40,7 +44,7 @@ class mapCommentDao {
     // 댓글 삭제 (soft delete)
     static async deleteComment(comment_id: number): Promise<void> {
         await db_connection.query(
-            `UPDATE "mapComment" SET deleted_at = CURRENT_TIMESTAMP WHERE id = $1`,
+            `UPDATE map_comment SET deleted_at = timezone('Asia/Seoul', CURRENT_TIMESTAMP) WHERE id = $1`,
             [comment_id]
         );
     }

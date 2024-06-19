@@ -13,8 +13,7 @@ interface User {
 }
 
 class userDao {
-    //유저 찾기
-    // client.query('SET search_path TO public')
+    // 유저 찾기
     static async findUser(email: string, platform: string): Promise<User[]> {
         const { rows } = await db_connection.query('SELECT * FROM users WHERE platform_type = $1 AND email = $2', [
             platform,
@@ -23,31 +22,45 @@ class userDao {
         return rows;
     }
 
+    static async findUserById(user_id: string): Promise<User | null> {
+        const { rows } = await db_connection.query('SELECT * FROM users WHERE user_id = $1', [
+            user_id
+        ]);
+        return rows.length > 0 ? rows[0] : null;
+    }
+
     // 유저 생성
     static async createUser(uuid: string, email: string, platform: string, displayName: string, nickName: string): Promise<void> {
         await db_connection.query(
             `INSERT INTO users (user_id, platform_type, email, "displayName", "nickName", verified_email, created_at, updated_at, deleted_at)
-            VALUES ($1, $2, $3, $4, $5, false, CURRENT_TIMESTAMP, NULL, NULL)`,
+            VALUES ($1, $2, $3, $4, $5, false, timezone('Asia/Seoul', CURRENT_TIMESTAMP), NULL, NULL)`,
             [uuid, platform, email, displayName, nickName]
         );
     }
 
-    // 유저업데이트
+    // 유저 업데이트
     static async updateUser(userId: string, displayName: string, nickName: string): Promise<void> {
         await db_connection.query(
-            `UPDATE users SET "displayName" = $1, "nickName" = $2, updated_at = CURRENT_TIMESTAMP WHERE user_id = $3`,
+            `UPDATE users SET "displayName" = $1, "nickName" = $2, updated_at = timezone('Asia/Seoul', CURRENT_TIMESTAMP) WHERE user_id = $3`,
             [displayName, nickName, userId]
         );
     }
 
-    // 유저 soft_delete -> 요거 soft delete한 다음에 어떻게???? 
+    // 유저 soft_delete
     static async deleteUser(userId: string): Promise<void> {
         await db_connection.query(
-            `UPDATE users SET deleted_at = CURRENT_TIMESTAMP WHERE user_id = $1`,
+            `UPDATE users SET deleted_at = timezone('Asia/Seoul', CURRENT_TIMESTAMP) WHERE user_id = $1`,
             [userId]
         );
     }
 
+    // deleted_at을 null로 업데이트
+    static async updateDeletedAtToNull(userId: string): Promise<void> {
+        await db_connection.query(
+            `UPDATE users SET deleted_at = NULL WHERE user_id = $1`,
+            [userId]
+        );
+    }
 }
 
 export default userDao;

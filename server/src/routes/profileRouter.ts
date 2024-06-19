@@ -11,10 +11,6 @@ interface AuthenticatedUser {
   nickName: string;
   email: string;
   platform_type: string;
-  verified_email: number;
-  created_at: Date;
-  updated_at: Date | null;
-  deleted_at: Date | null;
 }
 
 // Request 인터페이스를 확장하여 인증된 사용자 정보를 포함하는 인터페이스 정의
@@ -34,11 +30,22 @@ profileRouter.get('/profile', ensureAuthenticated, async (req: Request, res: Res
   }
 
   try {
+    // 사용자의 프로필 정보 조회
+    const userProfile = await userDao.findUserById(user.user_id);
+
+    if (!userProfile) {
+      return res.status(404).json({ error: '사용자를 찾을 수 없습니다.' });
+    }
+
+    // 필요하지 않은 필드를 제외한 사용자 정보를 반환
+    const { user_id, displayName, nickName } = userProfile;
+
     // 사용자의 차량 정보
     const userCars = await userCarDao.getUserCar(user.user_id);
+    
     // 사용자와 차량 정보를 응답으로 반환
     res.json({
-      user,
+      user: { user_id, displayName, nickName},
       userCars,
       message: '프로필 페이지입니다',
     });
@@ -97,6 +104,5 @@ profileRouter.delete('/profile', ensureAuthenticated, async (req: Request, res: 
     res.status(500).json({ error: '내부 서버 오류' });
   }
 });
-
 
 export default profileRouter;
