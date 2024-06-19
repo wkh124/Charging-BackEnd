@@ -1,0 +1,18 @@
+{
+  "include": ["src/**/*", "tests/**/*"],
+  "exclude": ["node_modules"],
+  "compilerOptions": {
+    "target": "es2016" /* 타입스크립트파일을 어떤 버전의 자바스크립트로 바꿔줄지 정하는 부분 */,
+    "module": "CommonJS" /* 자바스크립트 파일간 import 문법을 구현할 때 어떤 문법을 쓸지 정하는 곳 */,
+    //commonjs는 require 문법 es2015, esnext는 import 문법을 사용
+    "strict": true /* Enable all strict type-checking options. */,
+    "esModuleInterop": true /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */,
+    "skipLibCheck": true /* Skip type checking all .d.ts files. */,
+    "forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,
+    "outDir": "./dist",
+    // "rootDir": "./src",
+    "baseUrl": ".",
+    "noImplicitAny": true, // any라는 타입이 의도치않게 발생할 경우 에러를 띄워주는 설정
+    "strictNullChecks": true // null, undefined 타입에 이상한 조작하면 에러를 띄우는 설정
+  }
+}
