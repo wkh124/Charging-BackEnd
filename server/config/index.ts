@@ -68,6 +68,8 @@ const kakaoClientID = process.env.KAKAO_ID ?? '';
 const kakaoClientSecret = process.env.KAKAO_SECRET ?? '';
 const kakaoCallbackURL = process.env.KAKAO_CALL_BACK_URL ?? '';
 
+const url='http://localhost:3000';
+
 export {
   applicationName,
   port,
@@ -81,4 +83,5 @@ export {
   kakaoClientSecret,
   kakaoCallbackURL,
   db_connection,
+  url
 };
