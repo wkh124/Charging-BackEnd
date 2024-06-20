@@ -46,16 +46,19 @@ profileRouter.get('/profile', ensureAuthenticated, async (req: Request, res: Res
     console.log(carId);
 
     if (carId.length !== 0){
+      console.log(carId[0].car_id);
       const carImg = await carsImgDao.getCarImg(carId[0].car_id);
-      const carName=await carsDao.getCarNameById(carId[0].car_id)
+      const car=await carsDao.getCarBrandAndModel(carId[0].car_id);
+      console.log(car);
+      if (car !== null){
       res.json({
         user: nickName,
-        car_name:carName,
+        car: car,
         car_img:carImg[0].img_url,
         message: '프로필 페이지입니다',
       });
-    }else{
-    
+    }
+    }else{ 
     // 사용자와 차량 정보를 응답으로 반환
     res.json({
       user: nickName,

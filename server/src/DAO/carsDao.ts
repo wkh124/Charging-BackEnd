@@ -2,8 +2,8 @@ import { db_connection } from "../../config";
 
 interface Cars {
   id: number;
-  name: string;
-  brand: string;
+  name?: string;
+  brand?: string;
   model_year: number;
   fuel_efficiency: string;
   car_type: string;
@@ -23,6 +23,11 @@ class CarsDao {
   // 개별 전기차 조회
   static async getCar(id: number): Promise<Cars[] | null> {
     const { rows } = await db_connection.query('SELECT * FROM car WHERE id = $1 AND deleted_at IS NULL', [id]);
+    return rows.length > 0 ? rows[0] : null
+  }
+
+  static async getCarBrandAndModel(id: number): Promise<Cars[] | null> {
+    const { rows } = await db_connection.query('SELECT brand, name FROM car WHERE id = $1 AND deleted_at IS NULL', [id]);
     return rows.length > 0 ? rows[0] : null
   }
 
