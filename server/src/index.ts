@@ -11,7 +11,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
 import { port, db_connection } from '../config';
-import { authRouter, stateRouter, profileRouter, carReviewRouter, carRouter, mapCommentRouter, chargingMapRouter, profilePicRouter, commentLikesRouter, userReviewRouter} from './routes';
+import { carImgRouter,authRouter, stateRouter, profileRouter, carReviewRouter, carRouter, mapCommentRouter, chargingMapRouter, profilePicRouter, commentLikesRouter, userReviewRouter} from './routes';
 
 const app = express();
 let corsOptions = {
@@ -71,6 +71,8 @@ app.use('/', chargingMapRouter);
 app.use('/', profilePicRouter);
 app.use('/', commentLikesRouter);
 app.use('/', userReviewRouter);
+app.use('/', carImgRouter);
+
 
 
 
