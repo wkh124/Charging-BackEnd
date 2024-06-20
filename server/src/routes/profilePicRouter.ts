@@ -12,6 +12,7 @@ interface AuthenticatedRequest extends Request {
         profile_pic:string;
     };
 }
+
 router.post("/profile-pics", ensureAuthenticated, multerSetup, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const authReq = req as AuthenticatedRequest;

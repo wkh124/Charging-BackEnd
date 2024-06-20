@@ -10,6 +10,7 @@ const router = express.Router();
 interface AuthenticatedRequest extends Request {
   user?: {
       user_id: string;
+      profile_pic: string;
   };
 }
 
@@ -54,7 +55,7 @@ router.get('/cars/:carId/reviews/:reviewId', async (req: Request, res: Response)
       );
 
       const { rows: authorRows } = await db_connection.query(
-          `SELECT u."nickName" 
+          `SELECT u."nickName", u.profile_pic 
            FROM "users" u 
            LEFT JOIN "car_board" c ON u.user_id = c.user_id 
            WHERE c.id = $1 AND c.deleted_at IS NULL`,
@@ -72,12 +73,14 @@ router.get('/cars/:carId/reviews/:reviewId', async (req: Request, res: Response)
       const content = contentRows[0].content;
       const reactionCount = contentRows[0].reaction_count;
       const author = authorRows[0].nickName;
+      const profile_pic=authorRows[0].nickName;
 
       res.status(200).json({
           message: '게시글을 성공적으로 가져왔습니다.',
           content,
           reactionCount,
-          author
+          author,
+          profile_pic
       });
   } catch (error) {
       console.error('Error fetching post:', error);
@@ -89,22 +92,48 @@ router.get('/cars/:carId/reviews/:reviewId', async (req: Request, res: Response)
 router.get('/cars/:carId/reviews', async (req: Request, res: Response) => {
   try {
     const carId = req.params.carId;
+    const authReq = req as AuthenticatedRequest;
+    const user = authReq.user;
 
-    const reviewQuery = `
-      SELECT 
-        c.content, 
-        (SELECT COUNT(*) FROM comment_reaction i WHERE i.comment_id = c.id AND i.status = $2) AS reaction_count 
-      FROM car_board c 
-      WHERE c.car_id = $1 AND c.deleted_at IS NULL
-    `;
+    let reviewQuery: string;
+    let queryParams: (string | number)[];
+
+    if (user) {
+      // Query with user reaction information if user is authenticated
+      console.log(user.user_id);
+      reviewQuery = `
+        SELECT 
+          c.content, 
+          c.id,
+          (SELECT COUNT(*) FROM comment_reaction i WHERE i.comment_id = c.id AND i.status = $2) AS reaction_count,
+          COALESCE(c.updated_at, c.created_at) AS review_time,
+          (SELECT EXISTS(SELECT 1 FROM comment_reaction cr WHERE cr.comment_id = c.id AND cr.user_id = $3 AND cr.status = $2)) AS user_liked
+        FROM car_board c 
+        WHERE c.car_id = $1 AND c.deleted_at IS NULL
+      `;
+      queryParams = [carId, 'ACTIVE', user.user_id];
+    } else {
+      // Query without user reaction information if user is not authenticated
+      reviewQuery = `
+        SELECT 
+          c.content, 
+          c.id,
+          (SELECT COUNT(*) FROM comment_reaction i WHERE i.comment_id = c.id AND i.status = $2) AS reaction_count,
+          COALESCE(c.updated_at, c.created_at) AS review_time
+        FROM car_board c 
+        WHERE c.car_id = $1 AND c.deleted_at IS NULL
+      `;
+      queryParams = [carId, 'ACTIVE'];
+    }
+
     const authorQuery = `
-      SELECT u."nickName" 
+      SELECT u."nickName", u.profile_pic 
       FROM "users" u 
       JOIN "car_board" c ON u.user_id = c.user_id 
       WHERE c.car_id = $1 AND c.deleted_at IS NULL
     `;
 
-    const reviewResult: QueryResult = await db_connection.query(reviewQuery, [carId, 'ACTIVE']);
+    const reviewResult: QueryResult = await db_connection.query(reviewQuery, queryParams);
     const authorResult: QueryResult = await db_connection.query(authorQuery, [carId]);
 
     if (reviewResult.rows.length === 0) {
@@ -112,9 +141,13 @@ router.get('/cars/:carId/reviews', async (req: Request, res: Response) => {
     }
 
     const reviewsWithUsers = reviewResult.rows.map((review, index) => ({
+      review_id: review.id,
       content: review.content,
       reactionCount: review.reaction_count,
-      author: authorResult.rows[index]?.nickName || 'Unknown'
+      author: authorResult.rows[index]?.nickName || 'Unknown',
+      profile_pic: authorResult.rows[index]?.profile_pic || 'no photo',
+      time: review.review_time,
+      state: user ? review.user_liked : false
     }));
 
     res.status(200).json({
@@ -126,6 +159,7 @@ router.get('/cars/:carId/reviews', async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
 
 
 // 게시글 수정 라우터

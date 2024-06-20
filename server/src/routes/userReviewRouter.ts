@@ -25,7 +25,8 @@ router.get('/profile/reviews', ensureAuthenticated, async (req: Request, res: Re
     const { rows } = await db_connection.query(
       `SELECT 
           c.content, 
-          (SELECT COUNT(*) FROM comment_reaction i WHERE i.comment_id = c.id AND i.status=$1) AS reaction_count 
+          (SELECT COUNT(*) FROM comment_reaction i WHERE i.comment_id = c.id AND i.status=$1) AS reaction_count,
+          COALESCE(c.updated_at, c.created_at) AS review_time 
        FROM car_board c 
        WHERE c.user_id = $2 AND c.deleted_at IS NULL`,
       ['ACTIVE', user_id]
@@ -37,7 +38,8 @@ router.get('/profile/reviews', ensureAuthenticated, async (req: Request, res: Re
 
     const reviews = rows.map(row => ({
       content: row.content,
-      reactionCount: row.reaction_count
+      reactionCount: row.reaction_count,
+      time:row.review_time
     }));
 
     res.status(200).json({ message: '게시글을 성공적으로 가져왔습니다.', reviews });

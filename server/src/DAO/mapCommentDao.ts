@@ -24,7 +24,7 @@ class mapCommentDao {
     static async getCommentsByMapId(stat_id: string, page: number, limit: number = 10): Promise<mapComment[]> {
         const offset = (page - 1) * limit;
         const { rows } = await db_connection.query(
-            `SELECT mc.id, mc.stat_id, mc.user_id, u."nickName", mc.comment, mc.created_at, mc.updated_at, mc.deleted_at
+            `SELECT mc.id, mc.stat_id, mc.user_id, u."nickName", u.profile_pic, mc.comment, mc.created_at, mc.updated_at, mc.deleted_at
             FROM map_comment mc
             JOIN users u ON mc.user_id = u.user_id
             WHERE mc.stat_id = $1 AND mc.deleted_at IS NULL

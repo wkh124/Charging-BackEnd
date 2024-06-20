@@ -11,6 +11,7 @@ interface AuthenticatedUser {
   nickName: string;
   email: string;
   platform_type: string;
+  profile_pic:string;
 }
 
 // Request 인터페이스를 확장하여 인증된 사용자 정보를 포함하는 인터페이스 정의
@@ -38,7 +39,7 @@ profileRouter.get('/profile', ensureAuthenticated, async (req: Request, res: Res
     }
 
     // 필요하지 않은 필드를 제외한 사용자 정보를 반환
-    const { user_id, displayName, nickName } = userProfile;
+    const { user_id, displayName, nickName} = userProfile;
 
     // 사용자의 차량 정보
     const userCars = await userCarDao.getUserCar(user.user_id);
