@@ -12,6 +12,10 @@ interface User {
     deleted_at: Date | null;
 }
 
+interface Car{
+    id:number;
+}
+
 class userDao {
     // 유저 찾기
     static async findUser(email: string, platform: string): Promise<User[]> {
@@ -23,7 +27,7 @@ class userDao {
     }
 
     static async findUserById(user_id: string): Promise<User | null> {
-        const { rows } = await db_connection.query('SELECT * FROM users WHERE user_id = $1', [
+        const { rows } = await db_connection.query('SELECT "nickName" FROM users WHERE user_id = $1', [
             user_id
         ]);
         return rows.length > 0 ? rows[0] : null;
@@ -38,11 +42,19 @@ class userDao {
         );
     }
 
+    static async findCarId(carName:string): Promise<Car[]>{
+        const {rows}=await db_connection.query(
+            'SELECT id FROM car WHERE name = $1',
+            [carName]
+        )
+        return rows;
+    }
+
     // 유저 업데이트
-    static async updateUser(userId: string, displayName: string, nickName: string): Promise<void> {
+    static async updateUser(userId: string, nickName: string): Promise<void> {
         await db_connection.query(
-            `UPDATE users SET "displayName" = $1, "nickName" = $2, updated_at = timezone('Asia/Seoul', CURRENT_TIMESTAMP) WHERE user_id = $3`,
-            [displayName, nickName, userId]
+            `UPDATE users SET "nickName" = $1, updated_at = timezone('Asia/Seoul', CURRENT_TIMESTAMP) WHERE user_id = $2`,
+            [nickName, userId]
         );
     }
 

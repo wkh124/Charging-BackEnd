@@ -171,5 +171,34 @@ carImgRouter.get(
   },
 );
 
+// 개별 전기차 이미지 모델명으로 조회
+carImgRouter.get(
+  '/car-imgs-by-name/:car_name',
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const car_name = req.params.car_name
+
+      const car_id = await carsDao.getCarIdByName(car_name);
+      if (!car_id) {
+        console.log("car_id:", car_id);
+        return res.status(400).json({ message: '유효한 전기차 ID를 입력해야 합니다.' })
+      }
+      const carImg = await carsImgDao.getCarImg(car_id);
+
+      if (!carImg || carImg.length === 0) {
+        return res
+          .status(404)
+          .json({ message: '해당되는 전기차 이미지를 찾을 수 없습니다.' });
+      }
+
+      res.json({
+        carImg: carImg[0].img_url,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+);
+
 
 export default carImgRouter;
