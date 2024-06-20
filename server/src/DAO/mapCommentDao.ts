@@ -4,6 +4,7 @@ interface mapComment {
     id?: number;
     stat_id: string;
     user_id: string;
+    nickName?: string;
     comment: string;
     created_at?: Date;
     updated_at?: Date | null;
@@ -23,10 +24,11 @@ class mapCommentDao {
     static async getCommentsByMapId(stat_id: string, page: number, limit: number = 10): Promise<mapComment[]> {
         const offset = (page - 1) * limit;
         const { rows } = await db_connection.query(
-            `SELECT id, stat_id, user_id, comment, created_at, updated_at, deleted_at
-            FROM map_comment
-            WHERE stat_id = $1 AND deleted_at IS NULL
-            ORDER BY created_at DESC
+            `SELECT mc.id, mc.stat_id, mc.user_id, u.nickName, mc.comment, mc.created_at, mc.updated_at, mc.deleted_at
+            FROM map_comment mc
+            JOIN users u ON mc.user_id = u.user_id
+            WHERE mc.stat_id = $1 AND mc.deleted_at IS NULL
+            ORDER BY mc.created_at DESC
             LIMIT $2 OFFSET $3`,
             [stat_id, limit, offset]
         );
