@@ -60,6 +60,8 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use('/uploads', express.static('./uploads'))
+
 // 라우터 연결
 app.use('/', stateRouter);
 app.use('/', authRouter);
