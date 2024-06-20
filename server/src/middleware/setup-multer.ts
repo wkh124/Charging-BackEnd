@@ -15,7 +15,8 @@ const storage = multer.diskStorage({
     cb(null, 'uploads/');
   },
   filename: function (req: Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) {
-    cb(null, `${Date.now()}_${file.originalname}`);
+    const sanitizedFileName = file.originalname.replace(/\s+/g, '_');
+    cb(null, `${Date.now()}_${sanitizedFileName}`);
   },
 } as DiskStorageOptions);
 
