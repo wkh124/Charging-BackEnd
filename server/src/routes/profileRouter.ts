@@ -46,10 +46,8 @@ profileRouter.get('/profile', ensureAuthenticated, async (req: Request, res: Res
     console.log(carId);
 
     if (carId.length !== 0){
-      console.log(carId[0].car_id);
       const carImg = await carsImgDao.getCarImg(carId[0].car_id);
       const car=await carsDao.getCarBrandAndModel(carId[0].car_id);
-      console.log(car);
       if (car !== null){
       res.json({
         user_id: user.user_id,
