@@ -39,7 +39,7 @@ profileRouter.get('/profile', ensureAuthenticated, async (req: Request, res: Res
     }
 
     // 필요하지 않은 필드를 제외한 사용자 정보를 반환
-    const { nickName } = userProfile;
+    const { nickName, profile_pic } = userProfile;
 
     // 사용자의 차량 정보
     const carId = await userCarDao.getUserCar(user.user_id);
@@ -51,6 +51,7 @@ profileRouter.get('/profile', ensureAuthenticated, async (req: Request, res: Res
       if (car !== null){
       res.json({
         user_id: user.user_id,
+        user_img: profile_pic,
         user: nickName,
         car: car,
         car_img:carImg[0].img_url,
@@ -61,6 +62,7 @@ profileRouter.get('/profile', ensureAuthenticated, async (req: Request, res: Res
     // 사용자와 차량 정보를 응답으로 반환
     res.json({
       user_id: user.user_id,
+      user_img: profile_pic,
       user: nickName,
       car_img:"차량 정보가 없습니다.",
       message: '프로필 페이지입니다',

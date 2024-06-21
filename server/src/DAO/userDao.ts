@@ -4,6 +4,7 @@ interface User {
     user_id: string;
     platform_type: string;
     email: string;
+    profile_pic:string;
     displayName: string;
     nickName: string;
     verified_email: number;
@@ -27,7 +28,7 @@ class userDao {
     }
 
     static async findUserById(user_id: string): Promise<User | null> {
-        const { rows } = await db_connection.query('SELECT "nickName" FROM users WHERE user_id = $1', [
+        const { rows } = await db_connection.query('SELECT "nickName", profile_pic FROM users WHERE user_id = $1', [
             user_id
         ]);
         return rows.length > 0 ? rows[0] : null;
