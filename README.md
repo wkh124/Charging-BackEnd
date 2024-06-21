@@ -21,7 +21,7 @@
       ![ShadCN](https://img.shields.io/badge/ShadCN-20232A?style=flat-square&logo=shadcn&logoColor=black)
       ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)
       ![ESLint](https://img.shields.io/badge/ESLint-4B32C3?style=flat-square&logo=eslint&logoColor=white)
-     ![Jotai](https://img.shields.io/badge/Jotai-20232A?style=for-the-badge&logo=jotai&logoColor=61DAFB)
+     ![Jotai](https://img.shields.io/badge/Jotai-20232A?style=flat-square&logo=jotai&logoColor=61DAFB)
     
     - Back-End
       ![Express](https://img.shields.io/badge/Express-000000?style=flat-square&logo=express&logoColor=white)
