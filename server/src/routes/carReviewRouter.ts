@@ -1,8 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import { ensureAuthenticated } from '../middleware/authUser';
-import { db_connection } from '../../config';
-// import { RowDataPacket, FieldPacket } from 'mysql2';
-import { QueryResult } from 'pg';
+import { carReviewDao } from '../DAO';
 
 const router = express.Router();
 
@@ -20,18 +18,14 @@ router.post('/cars/:carId/reviews', ensureAuthenticated, async (req: Request, re
         const authReq = req as AuthenticatedRequest;
         const user = authReq.user;
       
-        // 사용자가 인증되지 않은 경우 401 오류 반환
         if (!user) {
           return res.status(401).json({ error: '인증되지 않음' });
         }
-      
+      const carId=req.params.carId;   
+      const userId = user.user_id;  
       const content = req.body.content;
-      const carId=req.params.carId;
 
-      const userId = user.user_id;
-
-      const params = [ carId, userId, content ];
-      await db_connection.query('INSERT INTO car_board (car_id, user_id, content, created_at ) VALUES ($1, $2, $3, CURRENT_TIMESTAMP)', params);
+      await carReviewDao.createCarReview(carId, userId, content)
   
       res.status(201).json({ message: '게시글이 성공적으로 작성되었습니다.' });
     } catch (error) {
@@ -40,128 +34,67 @@ router.post('/cars/:carId/reviews', ensureAuthenticated, async (req: Request, re
     }
   });
 
-//리뷰 가져오는 라우터
-router.get('/cars/:carId/reviews/:reviewId', async (req: Request, res: Response) => {
+//차량 별 리뷰 가져오는 라우터
+router.get('/cars/:carId/reviews', async (req: Request, res: Response) => {
   try {
-      const reviewId = req.params.reviewId;
-      
-      const { rows: contentRows } = await db_connection.query(
-          `SELECT 
-              c.content, 
-              (SELECT COUNT(*) FROM comment_reaction i WHERE i.comment_id = c.id) AS reaction_count 
-           FROM car_board c 
-           WHERE c.id = $1 AND c.deleted_at IS NULL`,
-          [reviewId]
-      );
+      const carId = req.params.carId;
+      const authReq = req as AuthenticatedRequest;
+      const user = authReq.user;
 
-      const { rows: authorRows } = await db_connection.query(
-          `SELECT u."nickName", u.profile_pic, u.user_id
-           FROM "users" u 
-           LEFT JOIN "car_board" c ON u.user_id = c.user_id 
-           WHERE c.id = $1 AND c.deleted_at IS NULL`,
-          [reviewId]
-      );
+      const reviewResult = await carReviewDao.getAllReviewContent(carId);
+      const reactionCountResult = await carReviewDao.getAllReactionCount(carId);
+      const authorResult = await carReviewDao.getAllAuthors(carId);
 
-      if (contentRows.length === 0) {
-          return res.status(404).json({ message: '게시글이 존재하지 않습니다.' });
+      let reviewsWithDetails;
+
+      if (user) {
+          const reactionResult = await carReviewDao.getAllReactionStateFromUser(carId, user.user_id);
+
+          reviewsWithDetails = reviewResult.map(review => {
+              const reacted = reactionResult.some(state => state.comment_id === review.id);
+              const author = authorResult.find(author => author.user_id === review.user_id);
+              const reactionCount = reactionCountResult.find(count => count.comment_id === review.id)?.reaction_count || 0;
+
+              return {
+                  review_id: review.id,
+                  content: review.content,
+                  time: review.review_time,
+                  state: reacted,
+                  reactionCount: reactionCount,
+                  user_id: author.user_id,
+                  profile_pic: author.profile_pic ,
+                  author: author.nickName 
+              };
+          });
+      } else {
+          reviewsWithDetails = reviewResult.map(review => {
+              const author = authorResult.find(author => author.user_id === review.user_id);
+              console.log(authorResult);
+              console.log(review);
+              const reactionCount = reactionCountResult.find(count => count.comment_id === review.id)?.reaction_count || 0;
+
+              return {
+                  review_id: review.id,
+                  content: review.content,
+                  time: review.review_time,
+                  status: false,
+                  reactionCount: reactionCount,
+                  user_id: author.user_id,
+                  profile_pic: author.profile_pic ,
+                  author: author.nickName
+              };
+          });
       }
-
-      if (authorRows.length === 0) {
-          return res.status(404).json({ message: '작성자를 찾을 수 없습니다.' });
-      }
-
-      const content = contentRows[0].content;
-      const reactionCount = contentRows[0].reaction_count;
-      const author = authorRows[0].nickName;
-      const profile_pic=authorRows[0].profile_pic;
-      const user_id=authorRows[0].user_id;
 
       res.status(200).json({
-          message: '게시글을 성공적으로 가져왔습니다.',
-          content,
-          reactionCount,
-          author,
-          profile_pic,
-          user_id
+          reviews: reviewsWithDetails
       });
   } catch (error) {
-      console.error('Error fetching post:', error);
+      console.error('Error fetching reviews with details:', error);
       res.status(500).json({ message: 'Internal Server Error' });
   }
 });
 
-
-router.get('/cars/:carId/reviews', async (req: Request, res: Response) => {
-  try {
-    const carId = req.params.carId;
-    const authReq = req as AuthenticatedRequest;
-    const user = authReq.user;
-
-    let reviewQuery: string;
-    let queryParams: (string | number)[];
-
-    if (user) {
-      // Query with user reaction information if user is authenticated
-      console.log(user.user_id);
-      reviewQuery = `
-        SELECT 
-          c.content, 
-          c.id,
-          (SELECT COUNT(*) FROM comment_reaction i WHERE i.comment_id = c.id AND i.status = $2) AS reaction_count,
-          COALESCE(c.updated_at, c.created_at) AS review_time,
-          (SELECT EXISTS(SELECT 1 FROM comment_reaction cr WHERE cr.comment_id = c.id AND cr.user_id = $3 AND cr.status = $2)) AS user_liked
-        FROM car_board c 
-        WHERE c.car_id = $1 AND c.deleted_at IS NULL
-      `;
-      queryParams = [carId, 'ACTIVE', user.user_id];
-    } else {
-      // Query without user reaction information if user is not authenticated
-      reviewQuery = `
-        SELECT 
-          c.content, 
-          c.id,
-          (SELECT COUNT(*) FROM comment_reaction i WHERE i.comment_id = c.id AND i.status = $2) AS reaction_count,
-          COALESCE(c.updated_at, c.created_at) AS review_time
-        FROM car_board c 
-        WHERE c.car_id = $1 AND c.deleted_at IS NULL
-      `;
-      queryParams = [carId, 'ACTIVE'];
-    }
-
-    const authorQuery = `
-      SELECT u."nickName", u.profile_pic , u.user_id
-      FROM "users" u 
-      JOIN "car_board" c ON u.user_id = c.user_id 
-      WHERE c.car_id = $1 AND c.deleted_at IS NULL
-    `;
-
-    const reviewResult: QueryResult = await db_connection.query(reviewQuery, queryParams);
-    const authorResult: QueryResult = await db_connection.query(authorQuery, [carId]);
-
-    if (reviewResult.rows.length === 0) {
-      return res.status(404).json({ message: '게시글이 존재하지 않습니다.' });
-    }
-
-    const reviewsWithUsers = reviewResult.rows.map((review, index) => ({
-      review_id: review.id,
-      content: review.content,
-      reactionCount: review.reaction_count,
-      author: authorResult.rows[index]?.nickName || 'Unknown',
-      user_id: authorResult.rows[index]?.user_id,
-      profile_pic: authorResult.rows[index]?.profile_pic || 'no photo',
-      time: review.review_time,
-      state: user ? review.user_liked : false
-    }));
-
-    res.status(200).json({
-      message: '게시글을 성공적으로 가져왔습니다.',
-      reviews: reviewsWithUsers
-    });
-  } catch (error) {
-    console.error('Error fetching reviews:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
-  }
-});
 
 
 
@@ -171,7 +104,6 @@ router.put('/cars/:carId/reviews/:reviewId',ensureAuthenticated, async (req: Req
         const authReq = req as AuthenticatedRequest;
         const user = authReq.user;
       
-        // 사용자가 인증되지 않은 경우 401 오류 반환
         if (!user) {
           return res.status(401).json({ error: '인증되지 않음' });
         }
@@ -179,10 +111,7 @@ router.put('/cars/:carId/reviews/:reviewId',ensureAuthenticated, async (req: Req
         const reviewId = req.params.reviewId;    
         const { content } = req.body;
 
-        await db_connection.query(
-          'UPDATE car_board SET content = $1, created_at = CURRENT_TIMESTAMP WHERE id = $2',
-          [content, reviewId],
-        );
+        await carReviewDao.updateCarReview(reviewId, content);
 
         res.status(200).json({ message: '게시글이 성공적으로 수정되었습니다.' });
     } catch (error) {
@@ -197,18 +126,14 @@ router.delete('/cars/:carId/reviews/:reviewId', ensureAuthenticated, async (req:
 
         const authReq = req as AuthenticatedRequest;
         const user = authReq.user;
-      
-        // 사용자가 인증되지 않은 경우 401 오류 반환
+
         if (!user) {
           return res.status(401).json({ error: '인증되지 않음' });
         }
 
         const reviewId = req.params.reviewId;        
 
-        await db_connection.query(
-          'UPDATE car_board SET deleted_at = CURRENT_TIMESTAMP WHERE id = $1',
-          [reviewId],
-        );
+        await carReviewDao.deleteCarReview(reviewId);
 
         res.status(200).json({ message: '게시글이 성공적으로 삭제되었습니다.' });
     } catch (error) {
