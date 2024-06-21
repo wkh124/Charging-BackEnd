@@ -112,6 +112,7 @@ router.get('/cars/:carId/reviews', async (req: Request, res: Response) => {
           (SELECT EXISTS(SELECT 1 FROM comment_reaction cr WHERE cr.comment_id = c.id AND cr.user_id = $3 AND cr.status = $2)) AS user_liked
         FROM car_board c 
         WHERE c.car_id = $1 AND c.deleted_at IS NULL
+        ORDER BY created_at DESC
       `;
       queryParams = [carId, 'ACTIVE', user.user_id];
     } else {
@@ -124,6 +125,7 @@ router.get('/cars/:carId/reviews', async (req: Request, res: Response) => {
           COALESCE(c.updated_at, c.created_at) AS review_time
         FROM car_board c 
         WHERE c.car_id = $1 AND c.deleted_at IS NULL
+        ORDER BY created_at DESC
       `;
       queryParams = [carId, 'ACTIVE'];
     }
