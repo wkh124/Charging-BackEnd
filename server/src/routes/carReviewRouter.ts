@@ -63,11 +63,11 @@ router.get('/cars/:carId/reviews/:reviewId', async (req: Request, res: Response)
       );
 
       if (contentRows.length === 0) {
-          return res.status(404).json({ message: '게시글이 존재하지 않습니다.' });
+          return res.status(200).json({});
       }
 
       if (authorRows.length === 0) {
-          return res.status(404).json({ message: '작성자를 찾을 수 없습니다.' });
+          return res.status(200).json({});
       }
 
       const content = contentRows[0].content;
@@ -139,7 +139,7 @@ router.get('/cars/:carId/reviews', async (req: Request, res: Response) => {
     const authorResult: QueryResult = await db_connection.query(authorQuery, [carId]);
 
     if (reviewResult.rows.length === 0) {
-      return res.status(404).json({ message: '게시글이 존재하지 않습니다.' });
+      return res.status(200).json({});
     }
 
     const reviewsWithUsers = reviewResult.rows.map((review, index) => ({
