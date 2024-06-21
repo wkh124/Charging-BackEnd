@@ -20,14 +20,14 @@
       ![Vite](https://img.shields.io/badge/Vite-20232A?style=flat-square&logo=vite&logoColor=AD46EF)
       ![ShadCN](https://img.shields.io/badge/ShadCN-20232A?style=flat-square&logo=shadcn&logoColor=black)
       ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)
+      ![Jotai](https://img.shields.io/badge/Jotai-20232A?style=flat-s&logo=jotai&logoColor=61DAFB)
       ![ESLint](https://img.shields.io/badge/ESLint-4B32C3?style=flat-square&logo=eslint&logoColor=white)
-     ![Jotai](https://img.shields.io/badge/Jotai-20232A?style=flat-square&logo=jotai&logoColor=61DAFB)
     
     - Back-End
-      ![Express](https://img.shields.io/badge/Express-000000?style=flat-square&logo=express&logoColor=white)
       ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white)
       ![Node.js](https://img.shields.io/badge/Node.js-43853D?style=flat-square&logo=node-dot-js&logoColor=white)
       ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=flat-square&logo=postgresql&logoColor=white)
+      ![Express](https://img.shields.io/badge/Express-000000?style=flat-square&logo=express&logoColor=white)
       ![OAuth](https://img.shields.io/badge/OAuth-000000?style=flat-square&logo=oauth&logoColor=white)
       ![Passport](https://img.shields.io/badge/Passport-34E27A?style=flat-square&logo=passport&logoColor=white)
       ![NanoID](https://img.shields.io/badge/NanoID-000000?style=flat-square&logo=nanoid&logoColor=white)
@@ -67,13 +67,14 @@
     - 차별점 : 
       - 데이터 분석을 통해 전기차의 필요성 강조
       - Typescript로 작성하여 코드의 안정성 증가
-      - 
+      - 소셜로그인으로만 구성하여 개인민감정보 보안
 
     - 기대효과 :
       - 전기차에 대한 사람들의 관심 증가 및 정보공유
 
 ## 4. 프로젝트 구성도
   - 와이어프레임/스토리보드 추가
+  <img src="imgs/Technology_Roadmapxample.jpg" alt="RoadMap" width="300" height="200">
 
 ## 5. 프로젝트 팀원 역할 분담
 |  이름  |             담당 업무                |
@@ -114,7 +115,6 @@
 │  .gitignore
 │  package-lock.json
 │  README.md
-│
 ├─.gitlab
 │  │  .gitkeep
 │  │
