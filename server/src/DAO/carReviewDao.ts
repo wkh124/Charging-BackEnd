@@ -100,7 +100,8 @@ class carReviewDao{
         const result: QueryResult = await db_connection.query(
           `SELECT 
           c.content, 
-          COALESCE(c.updated_at, c.created_at) AS review_time 
+          COALESCE(c.updated_at, c.created_at) AS review_time,
+          c.id
           FROM car_board c 
           WHERE c.user_id = $1 AND c.deleted_at IS NULL`,
           [userId ]

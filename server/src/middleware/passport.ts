@@ -52,7 +52,7 @@ async function handleUserLoginOrCreate(
 
       if (user.deleted_at) {
         const uuid = crypto.randomUUID();
-        const nickName = '익명' + nanoid();
+        const nickName = '익명' + nanoid(7);
         await userDao.createUser(
           uuid,
           email,

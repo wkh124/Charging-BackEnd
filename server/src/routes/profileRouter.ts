@@ -5,21 +5,6 @@ import AuthenticatedRequest  from '../interfaces/authenticatedRequest';
 
 const profileRouter = express.Router();
 
-// 사용자의 인증된 정보를 표현하는 인터페이스
-// interface AuthenticatedUser {
-//   user_id: string;
-//   displayName: string;
-//   nickName: string;
-//   email: string;
-//   platform_type: string;
-//   profile_pic:string
-// }
-
-// // Request 인터페이스를 확장하여 인증된 사용자 정보를 포함하는 인터페이스 정의
-// interface AuthenticatedRequest extends Request {
-//   user?: AuthenticatedUser;
-// }
-
 // 내 프로필 페이지 라우트
 profileRouter.get('/profile', ensureAuthenticated, async (req: Request, res: Response) => {
   // req 객체를 AuthenticatedRequest 타입으로 단언
@@ -133,6 +118,56 @@ profileRouter.put('/profile', ensureAuthenticated, async (req: Request, res: Res
     res.status(500).json({ error: '내부 서버 오류' });
   }
 });
+
+// // 프로필 업데이트
+// profileRouter.put('/profile/cars', ensureAuthenticated, async (req: Request, res: Response) => {
+
+//   const { user } = req as AuthenticatedRequest;
+
+//   if (!user) {
+//     return res.status(401).json({ error: '인증되지 않음' });
+//   }
+
+//   const { carName } = req.body;
+
+//   try {
+//     const car= await userCarDao.getUserCar(user.user_id)
+//         if (car.length !==0){
+//           await userCarDao.deleteUserCar(user.user_id)
+//         }
+//     if (carName.length !==0){
+//     const carId= await userDao.findCarId(carName);
+//       if (carId) {
+//         await userCarDao.createUserCar(user.user_id, carId[0].id);
+//         }
+//       }
+//     res.json({ message: '프로필이 성공적으로 업데이트되었습니다' });
+//   } catch (err) {
+//     console.error(err);
+
+//     res.status(500).json({ error: '내부 서버 오류' });
+//   }
+// });
+
+// // 프로필 업데이트
+// profileRouter.put('/profile/nickname', ensureAuthenticated, async (req: Request, res: Response) => {
+
+//   const { user } = req as AuthenticatedRequest;
+
+//   if (!user) {
+//     return res.status(401).json({ error: '인증되지 않음' });
+//   }
+
+//   const { nickName} = req.body;
+
+//   try {
+//     await userDao.updateUser(user.user_id, nickName);
+//     res.json({ message: '프로필이 성공적으로 업데이트되었습니다' });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: '내부 서버 오류' });
+//   }
+// });
 
 // 유저 soft_delete
 profileRouter.delete('/profile', ensureAuthenticated, async (req: Request, res: Response) => {

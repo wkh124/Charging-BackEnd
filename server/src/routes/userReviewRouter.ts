@@ -23,9 +23,11 @@ router.get('/profile/reviews',ensureAuthenticated, async (req: Request, res: Res
       reviewPromise,
       reactionCountPromise,
     ]);
+    console.log('Review Result:', reviewResult);
+    console.log('Reaction Count Result:', reactionCountResult);
 
 
-        const  reviewsWithDetails = reviewResult.map(review => {
+    let  reviewsWithDetails = reviewResult.map(review => {
               const reactionCount = reactionCountResult.find(count => count.comment_id === review.id)?.reaction_count || 0;
 
               return {
