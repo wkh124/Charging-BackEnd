@@ -68,13 +68,28 @@
       - 데이터 분석을 통해 전기차의 필요성 강조
       - Typescript로 작성하여 코드의 안정성 증가
       - 소셜로그인으로만 구성하여 개인민감정보 보안
+      - 전기차 충전소 실시간 정보와 리뷰를 한번에 제공
+      - 전기차 충전소 서치 기능
 
     - 기대효과 :
       - 전기차에 대한 사람들의 관심 증가 및 정보공유
+      - 보다 윤택한 전기차 생활
 
 ## 4. 프로젝트 구성도
-  - 와이어프레임/스토리보드 추가
-  <img src="./imgs/Technology_Roadmapxample.jpg" alt="RoadMap" width="300" height="200">
+  - 로드맵
+    <p aligin="center">
+      <img src="/uploads/4c9b16c2aa9cb2f2b9380c06c24565b9/Technology_Roadmap.jpg"  width="700" height="370">
+    </p>
+  - 소셜로그인
+
+  - 전기차 정보
+    <img src="/uploads/b7e57ca4150d6f7f539a9575eca3e810/car_main.png" alt="전기차메인" width="50%"><img src="/uploads/2cf7c888d9453a4fba8edfe14ccfa20e/car_info.png" alt="전기차정보" width="50%">
+  - 전기차 충전기
+    <img src="/uploads/a6720f6899a33ead78c30478e4eebfdf/mao_info.png" alt="충전소 정보" width="33%"><img src="/uploads/b507582968f9ad1f9462fa957514e8e7/map_charger.png" alt="충전기 정보" width="33%"><img src="/uploads/d990d5ad9094e22379d5a82907df0443/map_comment.png" alt="충전기 리뷰" width="33%">
+
+  - 나에게 맞는 전기차
+    <img src="/uploads/ea50af55dd5ce481bb22aac3b90841ad/MBTI.png" alt="mbti 메인" width="50%"><img src="/uploads/c260435150b2e7b3fb85b487e03af2b1/MBTI_result.png" alt="mbti 결과지" width="50%">
+  - 
 
 ## 5. 프로젝트 팀원 역할 분담
 |  이름  |             담당 업무                |
