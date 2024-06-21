@@ -78,6 +78,8 @@
 ## 4. 프로젝트 구성도
   - 로드맵
 ![Technology_Roadmap](/uploads/4c9b16c2aa9cb2f2b9380c06c24565b9/Technology_Roadmap.jpg)
+  - ERD
+![ERD](/uploads/2d18210709672b86646edf39b78381f6/ERD.png)
   - 소셜로그인
 
   - 전기차 정보
