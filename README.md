@@ -77,19 +77,19 @@
 
 ## 4. 프로젝트 구성도
   - 로드맵
-![Technology_Roadmap](/uploads/4c9b16c2aa9cb2f2b9380c06c24565b9/Technology_Roadmap.jpg)
+  ![Technology_Roadmap](/uploads/4c9b16c2aa9cb2f2b9380c06c24565b9/Technology_Roadmap.jpg)
   - ERD
-![ERD](/uploads/2d18210709672b86646edf39b78381f6/ERD.png)
+  ![ERD](/uploads/2d18210709672b86646edf39b78381f6/ERD.png)
   - 소셜로그인
 
   - 전기차 정보
-![car_main](/uploads/b7e57ca4150d6f7f539a9575eca3e810/car_main.png)
-![car_info](/uploads/2cf7c888d9453a4fba8edfe14ccfa20e/car_info.png)
+  ![car_main](/uploads/b7e57ca4150d6f7f539a9575eca3e810/car_main.png)
+  ![car_info](/uploads/2cf7c888d9453a4fba8edfe14ccfa20e/car_info.png)
 
   - 전기차 충전기
-![mao_info](/uploads/a6720f6899a33ead78c30478e4eebfdf/mao_info.png)
-![map_charger](/uploads/b507582968f9ad1f9462fa957514e8e7/map_charger.png)
-![map_comment](/uploads/d990d5ad9094e22379d5a82907df0443/map_comment.png)
+  ![mao_info](/uploads/a6720f6899a33ead78c30478e4eebfdf/mao_info.png)
+  ![map_charger](/uploads/b507582968f9ad1f9462fa957514e8e7/map_charger.png)
+  ![map_comment](/uploads/d990d5ad9094e22379d5a82907df0443/map_comment.png)
 
   - 나에게 맞는 전기차
 ![MBTI](/uploads/ea50af55dd5ce481bb22aac3b90841ad/MBTI.png)
