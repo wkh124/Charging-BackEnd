@@ -11,15 +11,15 @@ interface carReviews{
     content:string;
 }
 
-interface users{
-    nickName: string;
-    profilePic:string|null;
-    user_id: string;
-}
+// interface users{
+//     nickName: string;
+//     profilePic:string|null;
+//     user_id: string;
+// }
 
-interface ReactionCountResult {
-    reaction_count: string;
-  }
+// interface ReactionCountResult {
+//     reaction_count: string;
+//   }
 
 
 class carReviewDao{
@@ -42,40 +42,6 @@ class carReviewDao{
             [reviewId],
           );
     };
-
-    // static async getReviewContent(reviewId: string): Promise<carReviews[]> {
-    //     const {rows}= await db_connection.query(
-    //       `SELECT c.content, 
-    //        COALESCE(c.updated_at, c.created_at) AS review_time
-    //        FROM car_board c 
-    //        WHERE c.id = $1 AND c.deleted_at IS NULL`,
-    //       [reviewId]
-    //     );
-    //     return rows;
-    //   };
-    
-    //   static async getReactionCount(reviewId: string): Promise<string> {
-    //     const result: QueryResult<ReactionCountResult> = await db_connection.query(
-    //       `SELECT 
-    //        COUNT(id) AS reaction_count 
-    //        FROM comment_reaction i 
-    //        WHERE i.comment_id = $1 AND i.deleted_at IS NULL`,
-    //       [reviewId]
-    //     );
-    
-    //     return result.rows[0].reaction_count;
-    //   }
-
-    //   static async getAuthor(reviewId: string): Promise<users[]> {
-    //   const { rows } = await db_connection.query(
-    //     `SELECT u."nickName", u.profile_pic 
-    //      FROM "users" u 
-    //      LEFT JOIN "car_board" c ON u.user_id = c.user_id 
-    //      WHERE c.id = $1 AND c.deleted_at IS NULL`,
-    //     [reviewId]
-    //   ); 
-    //   return rows;
-    // };
 
     static async getAllReviewContent(carId: string): Promise<carReviews[]> {
         const { rows } = await db_connection.query(
@@ -159,15 +125,6 @@ class carReviewDao{
         return result.rows;
     };
 
-    // static async getAllReactionStateByUser(userId: string): Promise<any[]> {
-    //     const result: QueryResult = await db_connection.query(
-    //       `SELECT comment_id
-    //        FROM comment_reaction
-    //        WHERE user_id = $1 AND deleted_at IS NULL`,
-    //       [userId ]
-    //     );
-    //     return result.rows;
-    // };
 };
 
 export default carReviewDao;

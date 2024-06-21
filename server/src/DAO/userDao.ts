@@ -74,6 +74,13 @@ class userDao {
             [userId]
         );
     }
-}
+
+    static async userProfilePic(profilePicUrl: string, userId: string):Promise<string>{
+        const {rows} = await db_connection.query(
+            `UPDATE users SET profile_pic = $1 WHERE user_id = $2  RETURNING profile_pic`,
+             [profilePicUrl, userId]);
+       return rows[0];
+    };
+};
 
 export default userDao;

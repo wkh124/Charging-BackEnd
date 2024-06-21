@@ -1,22 +1,15 @@
 import express, { Request, Response, NextFunction } from 'express';
 import { ensureAuthenticated } from '../middleware/authUser';
 import { carReviewDao } from '../DAO';
+import  AuthenticatedRequest  from '../interfaces/authenticatedRequest';
 
 const router = express.Router();
 
-// 사용자의 인증된 정보를 표현하는 인터페이스
-interface AuthenticatedRequest extends Request {
-  user?: {
-      user_id: string;
-      profile_pic: string;
-  };
-}
 
 // 리뷰 생성 라우트
 router.post('/cars/:carId/reviews', ensureAuthenticated, async (req: Request, res: Response) => {
     try {
-        const authReq = req as AuthenticatedRequest;
-        const user = authReq.user;
+      const { user } = req as AuthenticatedRequest;
       
         if (!user) {
           return res.status(401).json({ error: '인증되지 않음' });
@@ -38,12 +31,17 @@ router.post('/cars/:carId/reviews', ensureAuthenticated, async (req: Request, re
 router.get('/cars/:carId/reviews', async (req: Request, res: Response) => {
   try {
       const carId = req.params.carId;
-      const authReq = req as AuthenticatedRequest;
-      const user = authReq.user;
+      const { user } = req as AuthenticatedRequest;
 
-      const reviewResult = await carReviewDao.getAllReviewContent(carId);
-      const reactionCountResult = await carReviewDao.getAllReactionCount(carId);
-      const authorResult = await carReviewDao.getAllAuthors(carId);
+      const reviewPromise = carReviewDao.getAllReviewContent(carId);
+      const reactionCountPromise = carReviewDao.getAllReactionCount(carId);
+      const authorPromise = carReviewDao.getAllAuthors(carId);
+  
+      const [reviewResult, reactionCountResult, authorResult] = await Promise.all([
+        reviewPromise,
+        reactionCountPromise,
+        authorPromise
+      ]);
 
       let reviewsWithDetails;
 
@@ -69,8 +67,6 @@ router.get('/cars/:carId/reviews', async (req: Request, res: Response) => {
       } else {
           reviewsWithDetails = reviewResult.map(review => {
               const author = authorResult.find(author => author.user_id === review.user_id);
-              console.log(authorResult);
-              console.log(review);
               const reactionCount = reactionCountResult.find(count => count.comment_id === review.id)?.reaction_count || 0;
 
               return {
@@ -101,8 +97,8 @@ router.get('/cars/:carId/reviews', async (req: Request, res: Response) => {
 // 게시글 수정 라우터
 router.put('/cars/:carId/reviews/:reviewId',ensureAuthenticated, async (req: Request, res: Response) => {
     try {
-        const authReq = req as AuthenticatedRequest;
-        const user = authReq.user;
+      const { user } = req as AuthenticatedRequest;
+ 
       
         if (!user) {
           return res.status(401).json({ error: '인증되지 않음' });
@@ -111,7 +107,7 @@ router.put('/cars/:carId/reviews/:reviewId',ensureAuthenticated, async (req: Req
         const reviewId = req.params.reviewId;    
         const { content } = req.body;
 
-        await carReviewDao.updateCarReview(reviewId, content);
+        await carReviewDao.updateCarReview( content, reviewId);
 
         res.status(200).json({ message: '게시글이 성공적으로 수정되었습니다.' });
     } catch (error) {
@@ -124,8 +120,8 @@ router.put('/cars/:carId/reviews/:reviewId',ensureAuthenticated, async (req: Req
 router.delete('/cars/:carId/reviews/:reviewId', ensureAuthenticated, async (req: Request, res: Response) => {
     try {
 
-        const authReq = req as AuthenticatedRequest;
-        const user = authReq.user;
+       const { user } = req as AuthenticatedRequest;
+
 
         if (!user) {
           return res.status(401).json({ error: '인증되지 않음' });

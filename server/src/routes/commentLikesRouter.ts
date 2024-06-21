@@ -3,15 +3,10 @@
 import express, { Request, Response } from 'express';
 import { ensureAuthenticated } from '../middleware/authUser';
 import  commentReactionDao from '../DAO/commentReactionDao'; 
+import  AuthenticatedRequest  from '../interfaces/authenticatedRequest';
 
 const reactionRouter = express.Router();
 
-// 사용자의 인증된 정보를 표현하는 인터페이스
-interface AuthenticatedRequest extends Request {
-    user?: {
-        user_id: string;
-    };
-}
 
 reactionRouter.post('/cars/:carId/reviews/:reviewId/review-likes', ensureAuthenticated, async (req: Request, res: Response) => {
     const authReq = req as AuthenticatedRequest;
@@ -23,9 +18,6 @@ reactionRouter.post('/cars/:carId/reviews/:reviewId/review-likes', ensureAuthent
     const user_id = authReq.user.user_id;
     const review_id = req.params.reviewId;
     const car_id = req.params.carId;
-
-    console.log(user_id);
-    console.log(review_id);
 
     try {
         await commentReactionDao.insertOrUpdateReaction(review_id, car_id, 'thumbs-up', user_id);

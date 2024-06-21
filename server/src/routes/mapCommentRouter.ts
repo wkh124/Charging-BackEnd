@@ -1,14 +1,9 @@
 import express, { Request, Response } from 'express';
 import mapCommentDao from '../DAO/mapCommentDao';
 import { ensureAuthenticated } from '../middleware/authUser';
+import  AuthenticatedRequest  from '../interfaces/authenticatedRequest';
 
 const mapCommentRouter = express.Router();
-
-interface AuthenticatedRequest extends Request {
-    user?: {
-        user_id: string;
-    };
-}
 
 // 댓글 생성
 mapCommentRouter.post('/map-comments', ensureAuthenticated, async (req: Request, res: Response) => {

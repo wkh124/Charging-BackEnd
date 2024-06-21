@@ -1,29 +1,29 @@
 import express, { Request, Response, NextFunction } from 'express';
 import { userDao, userCarDao, carsImgDao, carsDao } from '../DAO';
 import { ensureAuthenticated } from '../middleware/authUser';
+import AuthenticatedRequest  from '../interfaces/authenticatedRequest';
 
 const profileRouter = express.Router();
 
 // 사용자의 인증된 정보를 표현하는 인터페이스
-interface AuthenticatedUser {
-  user_id: string;
-  displayName: string;
-  nickName: string;
-  email: string;
-  platform_type: string;
-  profile_pic:string
-}
+// interface AuthenticatedUser {
+//   user_id: string;
+//   displayName: string;
+//   nickName: string;
+//   email: string;
+//   platform_type: string;
+//   profile_pic:string
+// }
 
-// Request 인터페이스를 확장하여 인증된 사용자 정보를 포함하는 인터페이스 정의
-interface AuthenticatedRequest extends Request {
-  user?: AuthenticatedUser;
-}
+// // Request 인터페이스를 확장하여 인증된 사용자 정보를 포함하는 인터페이스 정의
+// interface AuthenticatedRequest extends Request {
+//   user?: AuthenticatedUser;
+// }
 
 // 내 프로필 페이지 라우트
 profileRouter.get('/profile', ensureAuthenticated, async (req: Request, res: Response) => {
   // req 객체를 AuthenticatedRequest 타입으로 단언
-  const authReq = req as AuthenticatedRequest;
-  const user = authReq.user;
+  const { user } = req as AuthenticatedRequest;
 
   // 사용자가 인증되지 않은 경우 401 오류 반환
   if (!user) {
@@ -106,8 +106,7 @@ profileRouter.get('/profile', ensureAuthenticated, async (req: Request, res: Res
 // 프로필 업데이트
 profileRouter.put('/profile', ensureAuthenticated, async (req: Request, res: Response) => {
 
-  const authReq = req as AuthenticatedRequest;
-  const user = authReq.user;
+  const { user } = req as AuthenticatedRequest;
 
   if (!user) {
     return res.status(401).json({ error: '인증되지 않음' });
@@ -137,8 +136,7 @@ profileRouter.put('/profile', ensureAuthenticated, async (req: Request, res: Res
 
 // 유저 soft_delete
 profileRouter.delete('/profile', ensureAuthenticated, async (req: Request, res: Response) => {
-  const authReq = req as AuthenticatedRequest;
-  const user = authReq.user;
+  const { user } = req as AuthenticatedRequest;
 
   if (!user) {
     return res.status(401).json({ error: '인증되지 않음' });
