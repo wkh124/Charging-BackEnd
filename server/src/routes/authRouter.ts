@@ -38,23 +38,23 @@ router.get(
   }),
 );
 
-// router.post('/logout', (req: Request, res: Response, next: NextFunction) => {
-//   req.logout({}, (err: any) => {
-//     if (err) {
-//       return next(err);
-//     }
-//     sessionStore.destroy(req.sessionID, (err: any) => {
-//       if (err) {
-//         return next(err);
-//       }
-//       req.session.destroy((err) => {
-//         if (err) {
-//           return next(err);
-//         }
-//         res.redirect('/'); // 로그아웃 후 리다이렉트할 경로
-//       });
-//     });
-//   });
-// });
+router.get('/logout', function (req, res, next) {
+  if (req.session) {
+    req.session.destroy((err) => {
+      if (err) {
+        next(err);
+      } else {
+        res
+          .clearCookie('connect.sid', {
+            secure: false,
+            httpOnly: true,
+            path: '/',
+          })
+          .status(200)
+          .send('Ok.');
+      }
+    });
+  }
+});
 
 export default router;
