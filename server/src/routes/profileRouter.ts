@@ -52,6 +52,7 @@ profileRouter.get('/profile', ensureAuthenticated, async (req: Request, res: Res
       console.log(car);
       if (car !== null){
       res.json({
+        user_id: user.user_id,
         user: nickName,
         car: car,
         car_img:carImg[0].img_url,

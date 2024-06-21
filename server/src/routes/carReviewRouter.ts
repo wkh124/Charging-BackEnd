@@ -55,7 +55,7 @@ router.get('/cars/:carId/reviews/:reviewId', async (req: Request, res: Response)
       );
 
       const { rows: authorRows } = await db_connection.query(
-          `SELECT u."nickName", u.profile_pic 
+          `SELECT u."nickName", u.profile_pic, u.user_id
            FROM "users" u 
            LEFT JOIN "car_board" c ON u.user_id = c.user_id 
            WHERE c.id = $1 AND c.deleted_at IS NULL`,
@@ -73,14 +73,16 @@ router.get('/cars/:carId/reviews/:reviewId', async (req: Request, res: Response)
       const content = contentRows[0].content;
       const reactionCount = contentRows[0].reaction_count;
       const author = authorRows[0].nickName;
-      const profile_pic=authorRows[0].nickName;
+      const profile_pic=authorRows[0].profile_pic;
+      const user_id=authorRows[0].user_id;
 
       res.status(200).json({
           message: '게시글을 성공적으로 가져왔습니다.',
           content,
           reactionCount,
           author,
-          profile_pic
+          profile_pic,
+          user_id
       });
   } catch (error) {
       console.error('Error fetching post:', error);
@@ -127,7 +129,7 @@ router.get('/cars/:carId/reviews', async (req: Request, res: Response) => {
     }
 
     const authorQuery = `
-      SELECT u."nickName", u.profile_pic 
+      SELECT u."nickName", u.profile_pic , u.user_id
       FROM "users" u 
       JOIN "car_board" c ON u.user_id = c.user_id 
       WHERE c.car_id = $1 AND c.deleted_at IS NULL
@@ -145,6 +147,7 @@ router.get('/cars/:carId/reviews', async (req: Request, res: Response) => {
       content: review.content,
       reactionCount: review.reaction_count,
       author: authorResult.rows[index]?.nickName || 'Unknown',
+      user_id: authorResult.rows[index]?.user_id,
       profile_pic: authorResult.rows[index]?.profile_pic || 'no photo',
       time: review.review_time,
       state: user ? review.user_liked : false

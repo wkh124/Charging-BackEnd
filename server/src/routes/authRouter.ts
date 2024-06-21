@@ -11,7 +11,7 @@ router.get('/login/federated/google', passport.authenticate('google'));
 router.get(
   '/oauth2/redirect/google',
   passport.authenticate('google', {
-    successReturnToOrRedirect: 'http://localhost:5173/',
+    successReturnToOrRedirect: 'http://localhost:5173/setting/profile',
     failureRedirect: '/',
   }),
 );
@@ -22,7 +22,7 @@ router.get('/login/federated/kakao', passport.authenticate('kakao'));
 router.get(
   '/oauth2/redirect/kakao',
   passport.authenticate('kakao', {
-    successReturnToOrRedirect: 'http://localhost:5173/',
+    successReturnToOrRedirect: 'http://localhost:5173/setting/profile',
     failureRedirect: '/',
   }),
 );
@@ -33,7 +33,7 @@ router.get('/login/federated/naver', passport.authenticate('naver'));
 router.get(
   '/oauth2/redirect/naver',
   passport.authenticate('naver', {
-    successReturnToOrRedirect: 'http://localhost:5173/',
+    successReturnToOrRedirect: 'http://localhost:5173/setting/profile',
     failureRedirect: '/',
   }),
 );
