@@ -111,7 +111,6 @@
 
 ## 8. 폴더 구조
 ```
-C:.
 │  .gitignore
 │  package-lock.json
 │  README.md
@@ -177,9 +176,6 @@ C:.
     │  │
     │  └─services
     │          temp.ts
-    │
-    ├─uploads
-    │      1718897350866_스크린샷_2024-05-03_12-08-25.png
     │
     └─utils
             appError.ts
