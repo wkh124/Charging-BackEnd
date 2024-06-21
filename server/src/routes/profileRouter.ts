@@ -60,6 +60,7 @@ profileRouter.get('/profile', ensureAuthenticated, async (req: Request, res: Res
     }else{ 
     // 사용자와 차량 정보를 응답으로 반환
     res.json({
+      user_id: user.user_id,
       user: nickName,
       car_img:"차량 정보가 없습니다.",
       message: '프로필 페이지입니다',
