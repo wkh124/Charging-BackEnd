@@ -74,7 +74,7 @@
 
 ## 4. 프로젝트 구성도
   - 와이어프레임/스토리보드 추가
-  <img src="imgs/Technology_Roadmapxample.jpg" alt="RoadMap" width="300" height="200">
+  <img src="./imgs/Technology_Roadmapxample.jpg" alt="RoadMap" width="300" height="200">
 
 ## 5. 프로젝트 팀원 역할 분담
 |  이름  |             담당 업무                |
