@@ -78,18 +78,18 @@
 ## 4. 프로젝트 구성도
   - 로드맵
     <p aligin="center">
-      <img src="/uploads/4c9b16c2aa9cb2f2b9380c06c24565b9/Technology_Roadmap.jpg"  width="700" height="370">
+      <img src="https://kdt-gitlab.elice.io/ai_track/class_10/data_project/team02/charging_server/uploads/4c9b16c2aa9cb2f2b9380c06c24565b9/Technology_Roadmap.jpg"  width="700" height="370">
     </p>
   - 소셜로그인
 
   - 전기차 정보
-    <img src="/uploads/b7e57ca4150d6f7f539a9575eca3e810/car_main.png" alt="전기차메인" width="50%"><img src="/uploads/2cf7c888d9453a4fba8edfe14ccfa20e/car_info.png" alt="전기차정보" width="50%">
+    <img src="https://kdt-gitlab.elice.io/ai_track/class_10/data_project/team02/charging_server/uploads/b7e57ca4150d6f7f539a9575eca3e810/car_main.png" alt="전기차메인" width="50%"><img src="https://kdt-gitlab.elice.io/ai_track/class_10/data_project/team02/charging_server/uploads/2cf7c888d9453a4fba8edfe14ccfa20e/car_info.png" alt="전기차정보" width="50%">
   - 전기차 충전기
-    <img src="/uploads/a6720f6899a33ead78c30478e4eebfdf/mao_info.png" alt="충전소 정보" width="33%"><img src="/uploads/b507582968f9ad1f9462fa957514e8e7/map_charger.png" alt="충전기 정보" width="33%"><img src="/uploads/d990d5ad9094e22379d5a82907df0443/map_comment.png" alt="충전기 리뷰" width="33%">
+    <img src="https://kdt-gitlab.elice.io/ai_track/class_10/data_project/team02/charging_server/uploads/a6720f6899a33ead78c30478e4eebfdf/mao_info.png" alt="충전소 정보" width="33%"><img src="https://kdt-gitlab.elice.io/ai_track/class_10/data_project/team02/charging_server/uploads/b507582968f9ad1f9462fa957514e8e7/map_charger.png" alt="충전기 정보" width="33%"><img src="https://kdt-gitlab.elice.io/ai_track/class_10/data_project/team02/charging_server/uploads/d990d5ad9094e22379d5a82907df0443/map_comment.png" alt="충전기 리뷰" width="33%">
 
   - 나에게 맞는 전기차
-    <img src="/uploads/ea50af55dd5ce481bb22aac3b90841ad/MBTI.png" alt="mbti 메인" width="50%"><img src="/uploads/c260435150b2e7b3fb85b487e03af2b1/MBTI_result.png" alt="mbti 결과지" width="50%">
-  - 
+    <img src="https://kdt-gitlab.elice.io/ai_track/class_10/data_project/team02/charging_server/uploads/ea50af55dd5ce481bb22aac3b90841ad/MBTI.png" alt="mbti 메인" width="50%"><img src="https://kdt-gitlab.elice.io/ai_track/class_10/data_project/team02/charging_server/uploads/c260435150b2e7b3fb85b487e03af2b1/MBTI_result.png" alt="mbti 결과지" width="50%">
+
 
 ## 5. 프로젝트 팀원 역할 분담
 |  이름  |             담당 업무                |
