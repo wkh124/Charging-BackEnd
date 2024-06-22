@@ -3,7 +3,7 @@ import { chargingMapDao } from '../DAO';
 
 const chargingMapRouter = express.Router();
 
-//   // 충전소 이름으로 조회 & 페이지네이션 라우터
+// 충전소 이름으로 조회 & 페이지네이션 라우터
 chargingMapRouter.get('/maps', async (req, res, next) => {
   try {
     const station = String(req.query.station);
@@ -21,55 +21,71 @@ chargingMapRouter.get('/maps', async (req, res, next) => {
     
     if (!station) return null;
     
-    // 충전소 조회
-    const chargers = await chargingMapDao.getChargerByStation(
+    // 전체 충전소 조회
+    const totalChargers = await chargingMapDao.getChgrByStation(
       station,
       page,
       limit,
     );
 
-    if (!chargers || chargers.length === 0) {
+    if (!totalChargers || totalChargers.length === 0) {
       return res
       .status(404)
       .json({ message: '해당되는 충전소를 찾을 수 없습니다.' });
     }
     
-    // 충전소 카운팅
-    const chargerTotalCount = chargers.length
+    // 전체 충전소 카운팅
+    const totalChargersCount = totalChargers.length
 
 
-    // 지역으로 조회 및 카운팅
-    const chargerByZone = chargers.filter(charger => 
-      charger.zcode === zone && 
-      charger !== null
+    // 충전소명 & 지역코드 조회
+    const chargersByStationAndZone = await chargingMapDao.getChrgByStationAndZone(
+      station,
+      zone,
+      page,
+      limit
     )
-    const chargerByZoneCount = chargerByZone.length;
+
+    // 충전소명 & 지역코드 카운팅
+    const chargerByStationAndZoneCount = chargersByStationAndZone.length
 
 
-    // 충전기 타입으로 조회 및 카운팅
-    const chargerByType = chargers.filter(charger => 
-      charger.chgerType === type && 
-      charger !== null
+
+    // 충전소명 & 타입 조회
+    const chargersByStationAndType = await chargingMapDao.getChrgByStationAndType(
+      station,
+      type,
+      page,
+      limit
     )
-    const chargerByTypeCount = chargerByType.length;
+
+    // 충전소명 & 타입 카운팅
+    const chargersByStationAndTypeCount = chargersByStationAndType.length 
 
 
-    // 지역 & 충전기 타입으로 조회 및 카운팅
-    const chargerByZoneAndType = chargers.filter(charger => 
-      charger.zcode === zone && 
-      charger.chgerType === type && 
-      charger !== null
+
+    // 충전소명 & 지역코드 & 타입 조회 (All Query)
+    const chargersByAllQuery = await chargingMapDao.getChrgByAllQuery(
+      station,
+      zone,
+      type,
+      page,
+      limit
     )
-    const chargerByZoneAndTypeCount = chargerByZoneAndType.length;
+
+    // 충전소명 & 타입 카운팅
+    const chargersByAllQueryCount = chargersByAllQuery.length; 
+
 
     res.json({
-      chargers,
-      chargerByZone,
-      chargerByType,
-      chargerTotalCount,
-      chargerByZoneCount,
-      chargerByTypeCount,
-      chargerByZoneAndTypeCount,
+      totalChargers,
+      chargersByStationAndZone,
+      chargersByStationAndType,
+      chargersByAllQuery,
+      totalChargersCount,
+      chargerByStationAndZoneCount,
+      chargersByStationAndTypeCount,
+      chargersByAllQueryCount,
     });
   } catch (err) {
     next(err);
@@ -77,3 +93,13 @@ chargingMapRouter.get('/maps', async (req, res, next) => {
 });
 
 export default chargingMapRouter;
+
+
+// "totalChargersCount":1154,"chargerByStationAndZoneCount":242,"chargersByStationAndTypeCount":824,"chargersByAllQueryCount":165}
+  
+// {
+//   "totalChargersCount": 500,
+//   "chargerByStationAndZoneCount": 242,
+//   "chargersByStationAndTypeCount": 500,
+//   "chargersByAllQueryCount": 165
+// }

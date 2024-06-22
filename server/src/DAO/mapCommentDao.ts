@@ -2,8 +2,9 @@ import { db_connection } from '../../config';
 
 interface mapComment {
     id?: number;
-    map_id: string;
+    stat_id: string;
     user_id: string;
+    nickName?: string;
     comment: string;
     created_at?: Date;
     updated_at?: Date | null;
@@ -12,23 +13,24 @@ interface mapComment {
 
 class mapCommentDao {
     // 댓글 생성
-    static async createComment(map_id: string, user_id: string, comment: string): Promise<void> {
+    static async createComment(stat_id: string, user_id: string, comment: string): Promise<void> {
         await db_connection.query(
-            `INSERT INTO map_comment (map_id, user_id, comment, created_at) VALUES ($1, $2, $3, timezone('Asia/Seoul', CURRENT_TIMESTAMP))`,
-            [map_id, user_id, comment]
+            `INSERT INTO map_comment (stat_id, user_id, comment, created_at) VALUES ($1, $2, $3, timezone('Asia/Seoul', CURRENT_TIMESTAMP))`,
+            [stat_id, user_id, comment]
         );
     }
 
     // 특정 충전기의 댓글 가져오기 (오프셋 기반 페이지네이션)
-    static async getCommentsByMapId(map_id: string, page: number, limit: number = 10): Promise<mapComment[]> {
+    static async getCommentsByMapId(stat_id: string, page: number, limit: number = 10): Promise<mapComment[]> {
         const offset = (page - 1) * limit;
         const { rows } = await db_connection.query(
-            `SELECT id, map_id, user_id, comment, created_at, updated_at, deleted_at
-            FROM map_comment
-            WHERE map_id = $1 AND deleted_at IS NULL
-            ORDER BY created_at DESC
+            `SELECT mc.id, mc.stat_id, mc.user_id, u."nickName", u.profile_pic, mc.comment, mc.created_at, mc.updated_at, mc.deleted_at
+            FROM map_comment mc
+            JOIN users u ON mc.user_id = u.user_id
+            WHERE mc.stat_id = $1 AND mc.deleted_at IS NULL
+            ORDER BY mc.created_at DESC
             LIMIT $2 OFFSET $3`,
-            [map_id, limit, offset]
+            [stat_id, limit, offset]
         );
         return rows;
     }

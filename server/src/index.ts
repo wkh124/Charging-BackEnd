@@ -11,12 +11,17 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
 import { port, db_connection } from '../config';
-import { authRouter, stateRouter, profileRouter, carReviewRouter, carRouter, mapCommentRouter, chargingMapRouter} from './routes';
+import { carImgRouter,authRouter, stateRouter, profileRouter, carReviewRouter, carRouter, mapCommentRouter, chargingMapRouter, profilePicRouter, commentLikesRouter, userReviewRouter} from './routes';
 
 const app = express();
+let corsOptions = {
+  origin: 'http://kdt-ai-10-team02.elicecoding.com/api', // 출처 허용 옵션
+  credentials: true, // 사용자 인증이 필요한 리소스(쿠키 ..등) 접근
+};
 
 // 부가 기능 미들웨어 연결
-app.use(cors());
+app.use(cors(corsOptions));
+// 부가 기능 미들웨어 연결
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -55,14 +60,23 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use('/uploads', express.static('./uploads'))
+
 // 라우터 연결
-app.use('/', stateRouter);
-app.use('/', authRouter);
-app.use('/', profileRouter);
-app.use('/', carReviewRouter);
-app.use('/', carRouter);
-app.use('/', mapCommentRouter);
-app.use('/', chargingMapRouter);
+app.use('/api', stateRouter);
+app.use('/api', authRouter);
+app.use('/api', profileRouter);
+app.use('/api', carReviewRouter);
+app.use('/api', carRouter);
+app.use('/api', mapCommentRouter);
+app.use('/api', chargingMapRouter);
+app.use('/api', profilePicRouter);
+app.use('/api', commentLikesRouter);
+app.use('/api', userReviewRouter);
+app.use('/api', carImgRouter);
+
+
+
 
 // 오류 처리 미들웨어
 app.use((req, res, next) => {

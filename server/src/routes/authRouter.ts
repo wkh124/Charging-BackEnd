@@ -11,7 +11,7 @@ router.get('/login/federated/google', passport.authenticate('google'));
 router.get(
   '/oauth2/redirect/google',
   passport.authenticate('google', {
-    successReturnToOrRedirect: 'http://localhost:5173/',
+    successReturnToOrRedirect: 'http://kdt-ai-10-team02.elicecoding.com',
     failureRedirect: '/',
   }),
 );
@@ -22,7 +22,7 @@ router.get('/login/federated/kakao', passport.authenticate('kakao'));
 router.get(
   '/oauth2/redirect/kakao',
   passport.authenticate('kakao', {
-    successReturnToOrRedirect: 'http://localhost:5173/',
+    successReturnToOrRedirect: 'http://kdt-ai-10-team02.elicecoding.com',
     failureRedirect: '/',
   }),
 );
@@ -33,28 +33,28 @@ router.get('/login/federated/naver', passport.authenticate('naver'));
 router.get(
   '/oauth2/redirect/naver',
   passport.authenticate('naver', {
-    successReturnToOrRedirect: 'http://localhost:5173/',
+    successReturnToOrRedirect: 'http://kdt-ai-10-team02.elicecoding.com',
     failureRedirect: '/',
   }),
 );
 
-// router.post('/logout', (req: Request, res: Response, next: NextFunction) => {
-//   req.logout({}, (err: any) => {
-//     if (err) {
-//       return next(err);
-//     }
-//     sessionStore.destroy(req.sessionID, (err: any) => {
-//       if (err) {
-//         return next(err);
-//       }
-//       req.session.destroy((err) => {
-//         if (err) {
-//           return next(err);
-//         }
-//         res.redirect('/'); // 로그아웃 후 리다이렉트할 경로
-//       });
-//     });
-//   });
-// });
+router.get('/logout', function (req, res, next) {
+  if (req.session) {
+    req.session.destroy((err) => {
+      if (err) {
+        next(err);
+      } else {
+        res
+          .clearCookie('connect.sid', {
+            secure: false,
+            httpOnly: true,
+            path: '/',
+          })
+          .status(200)
+          .send('Ok.');
+      }
+    });
+  }
+});
 
 export default router;

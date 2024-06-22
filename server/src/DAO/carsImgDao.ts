@@ -40,6 +40,7 @@ class CarsImgDao {
     );
     return rows;
   }
+
 }
 
 export default CarsImgDao;

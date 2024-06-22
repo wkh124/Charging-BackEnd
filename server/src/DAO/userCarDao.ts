@@ -9,14 +9,28 @@ interface UserCar {
 
 class UserCarDao {
     static async getUserCar(userId: string): Promise<UserCar[]> {
-        const { rows } = await db_connection.query('SELECT * FROM user_car WHERE user_id = $1 AND deleted_at IS NULL', [userId]);
+        const { rows } = await db_connection.query('SELECT car_id FROM user_car WHERE user_id = $1 AND deleted_at IS NULL', [userId]);
         return rows;
     }
 
-    static async updateUserCar(userId: string, carId: number): Promise<void> {
+    // static async updateUserCar(userId: string, carId: number): Promise<void> {
+    //     await db_connection.query(
+    //         `UPDATE user_car SET car_id = $1, updated_at = CURRENT_TIMESTAMP WHERE user_id = $2 AND deleted_at IS NULL`,
+    //         [carId, userId]
+    //     );
+    // }
+
+    static async createUserCar(userId: string, carId: number): Promise<void> {
         await db_connection.query(
-            `UPDATE user_car SET car_id = $1, updated_at = CURRENT_TIMESTAMP WHERE user_id = $2 AND deleted_at IS NULL`,
+            `INSERT INTO user_car (car_id, user_id, created_at) VALUES ($1, $2, timezone('Asia/Seoul', CURRENT_TIMESTAMP))`,
             [carId, userId]
+        );
+    }
+
+    static async deleteUserCar(userId: string): Promise<void> {
+        await db_connection.query(
+            `UPDATE user_car SET  deleted_at = CURRENT_TIMESTAMP WHERE user_id = $1 AND deleted_at IS NULL`,
+            [userId]
         );
     }
 }
