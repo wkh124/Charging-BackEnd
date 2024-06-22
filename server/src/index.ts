@@ -15,7 +15,7 @@ import { carImgRouter,authRouter, stateRouter, profileRouter, carReviewRouter, c
 
 const app = express();
 let corsOptions = {
-  origin: "http://localhost:5173", // 출처 허용 옵션
+  origin: 'http://kdt-ai-10-team02.elicecoding.com/api', // 출처 허용 옵션
   credentials: true, // 사용자 인증이 필요한 리소스(쿠키 ..등) 접근
 };
 
@@ -63,17 +63,17 @@ app.use((req, res, next) => {
 app.use('/uploads', express.static('./uploads'))
 
 // 라우터 연결
-app.use('/', stateRouter);
-app.use('/', authRouter);
-app.use('/', profileRouter);
-app.use('/', carReviewRouter);
-app.use('/', carRouter);
-app.use('/', mapCommentRouter);
-app.use('/', chargingMapRouter);
-app.use('/', profilePicRouter);
-app.use('/', commentLikesRouter);
-app.use('/', userReviewRouter);
-app.use('/', carImgRouter);
+app.use('/api', stateRouter);
+app.use('/api', authRouter);
+app.use('/api', profileRouter);
+app.use('/api', carReviewRouter);
+app.use('/api', carRouter);
+app.use('/api', mapCommentRouter);
+app.use('/api', chargingMapRouter);
+app.use('/api', profilePicRouter);
+app.use('/api', commentLikesRouter);
+app.use('/api', userReviewRouter);
+app.use('/api', carImgRouter);
 
 
 
