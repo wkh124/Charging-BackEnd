@@ -76,24 +76,26 @@
       - 보다 윤택한 전기차 생활
 
 ## 4. 프로젝트 구성도
-  - 로드맵
-  ![Technology_Roadmap](/uploads/4c9b16c2aa9cb2f2b9380c06c24565b9/Technology_Roadmap.jpg)
+  - 피그마
+  ![figma](https://github.com/user-attachments/assets/ebf79c1f-7fca-4e32-ac25-493c89cac233)
+
   - ERD
-  ![ERD](/uploads/2d18210709672b86646edf39b78381f6/ERD.png)
+  ![ERD](https://github.com/user-attachments/assets/9ea009b1-6366-47be-b59f-f1b23bcec756)
+    
   - 소셜로그인
+  ![social](https://github.com/user-attachments/assets/73dcf103-49d8-40b3-9eb6-3d2f18a2c1d3)
+
+  - 메인 페이지
+  ![main](https://github.com/user-attachments/assets/80a7b5b9-d304-4fdf-9bf4-b8c15c0cb6ad)
 
   - 전기차 정보
-  ![car_main](/uploads/b7e57ca4150d6f7f539a9575eca3e810/car_main.png)
-  ![car_info](/uploads/2cf7c888d9453a4fba8edfe14ccfa20e/car_info.png)
+  ![car_main](https://github.com/user-attachments/assets/9deeee24-709f-4989-802e-939fa9f038fd)
+  ![car_info](https://github.com/user-attachments/assets/3b120975-e1b1-411c-8c22-fc4763dab643)
 
   - 전기차 충전기
-  ![mao_info](/uploads/a6720f6899a33ead78c30478e4eebfdf/mao_info.png)
-  ![map_charger](/uploads/b507582968f9ad1f9462fa957514e8e7/map_charger.png)
-  ![map_comment](/uploads/d990d5ad9094e22379d5a82907df0443/map_comment.png)
-
-  - 나에게 맞는 전기차
-![MBTI](/uploads/ea50af55dd5ce481bb22aac3b90841ad/MBTI.png)
-![MBTI_result](/uploads/c260435150b2e7b3fb85b487e03af2b1/MBTI_result.png)
+  ![mao_info](https://github.com/user-attachments/assets/a09bc254-9089-4b8f-94e0-4f3f0d4af79a)
+  ![map_charger](https://github.com/user-attachments/assets/7706458f-526e-4607-bafb-8986dfd7b37a)
+  ![map_comment](https://github.com/user-attachments/assets/b52f043c-0498-47b8-9790-feb0d46798b4)
 
 
 ## 5. 프로젝트 팀원 역할 분담
