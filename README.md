@@ -97,6 +97,10 @@
   ![map_charger](https://github.com/user-attachments/assets/7706458f-526e-4607-bafb-8986dfd7b37a)
   ![map_comment](https://github.com/user-attachments/assets/b52f043c-0498-47b8-9790-feb0d46798b4)
 
+  - 나에게 맞는 전기차
+  ![MBTI](https://github.com/user-attachments/assets/1e4cd4c3-37f9-4cbe-aba1-14453f070348)
+  ![MBTI_select](https://github.com/user-attachments/assets/bdcfb39d-c4b5-4b2b-b146-9db0e1a9d667)
+  ![MBTI_result](https://github.com/user-attachments/assets/d5312d91-5177-45dd-88ea-3a80e3d3f051)
 
 ## 5. 프로젝트 팀원 역할 분담
 |  이름  |             담당 업무                |
@@ -125,14 +129,7 @@
    - 개발 단계: 웹 서버 사용자가 직접 백엔드에 저장할 수 있는 기능 구현, 데이터베이스 구축 및 API 활용, 데이터 분석 개념 총동원하기
    - 수정 단계: 코치님 피드백 반영해서 분석 / 시각화 방식 수정
 
-
-## 6. 버전
-  - 프로젝트의 버전 기입
-
-## 7. FAQ
-  - 자주 받는 질문 정리
-
-## 8. 폴더 구조
+## 6. 폴더 구조
 ```
 │  .gitignore
 │  package-lock.json
