@@ -76,6 +76,7 @@
       - 보다 윤택한 전기차 생활
 
 ## 4. 프로젝트 구성도
+
   - 피그마
   ![figma](https://github.com/user-attachments/assets/ebf79c1f-7fca-4e32-ac25-493c89cac233)
 
